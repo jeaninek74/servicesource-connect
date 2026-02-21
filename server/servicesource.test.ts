@@ -69,6 +69,11 @@ vi.mock("./db", () => ({
   }),
   upsertDigestPreference: vi.fn().mockResolvedValue(undefined),
   getDigestSubscribers: vi.fn().mockResolvedValue([]),
+  // Nearby
+  getNearbyResources: vi.fn().mockResolvedValue([
+    { id: 10, name: "Texas Vet Housing", state: "TX", coverageArea: "state", verifiedLevel: "verified", isActive: true },
+    { id: 11, name: "National VA Benefits", state: null, coverageArea: "national", verifiedLevel: "partner_verified", isActive: true },
+  ]),
 }));
 
 // ─── Context factories ────────────────────────────────────────────────────────
@@ -465,5 +470,45 @@ describe("digest router", () => {
   it("non-admin cannot trigger digest send", async () => {
     const caller = appRouter.createCaller(makeUserCtx("user"));
     await expect(caller.digest.triggerSend()).rejects.toThrow();
+  });
+});
+
+// ─── Nearby Resources tests ───────────────────────────────────────────────────
+describe("resources.nearby", () => {
+  it("returns nearby resources for a given state (public)", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.resources.nearby({ state: "TX" });
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0].name).toBe("Texas Vet Housing");
+  });
+
+  it("accepts optional categorySlugs filter", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.resources.nearby({
+      state: "CA",
+      categorySlugs: ["housing", "healthcare"],
+    });
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("accepts custom limit up to 6", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.resources.nearby({ state: "TX", limit: 6 });
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("rejects invalid state code (wrong length)", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.resources.nearby({ state: "TEXAS" })
+    ).rejects.toThrow();
+  });
+
+  it("rejects limit above 6", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.resources.nearby({ state: "TX", limit: 10 })
+    ).rejects.toThrow();
   });
 });

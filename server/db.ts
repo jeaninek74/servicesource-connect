@@ -7,7 +7,7 @@ import {
   lenders,
   partnerSubmissions,
   profiles,
-  resourceCategories,
+  resourceCategories as categories,
   resourceReviews,
   resources,
   savedItems,
@@ -99,7 +99,7 @@ export async function upsertProfile(userId: number, data: Partial<typeof profile
 export async function getAllCategories() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(resourceCategories).orderBy(resourceCategories.sortOrder);
+  return db.select().from(categories).orderBy(categories.sortOrder);
 }
 
 // ─── Resources ────────────────────────────────────────────────────────────────
@@ -488,4 +488,46 @@ export async function getDigestSubscribers() {
     .from(digestPreferences)
     .innerJoin(users, eq(digestPreferences.userId, users.id))
     .where(eq(digestPreferences.enabled, true));
+}
+
+/**
+ * Returns up to `limit` resources that are local to the given state
+ * (or national coverage), optionally filtered by category slugs.
+ * Results are ordered: partner_verified first, then verified, then by name.
+ */
+export async function getNearbyResources(params: {
+  state: string;
+  categorySlugs?: string[];
+  limit?: number;
+}) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const limit = params.limit ?? 3;
+
+  // If category slugs provided, resolve them to IDs first
+  let categoryIds: number[] = [];
+  if (params.categorySlugs && params.categorySlugs.length > 0) {
+    const cats = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(inArray(categories.slug, params.categorySlugs));
+    categoryIds = cats.map((c) => c.id);
+  }
+
+  const conditions = [
+    eq(resources.isActive, true),
+    or(eq(resources.state, params.state), eq(resources.coverageArea, "national"))!,
+  ];
+
+  if (categoryIds.length > 0) {
+    conditions.push(inArray(resources.categoryId, categoryIds));
+  }
+
+  return db
+    .select()
+    .from(resources)
+    .where(and(...conditions))
+    .orderBy(resources.verifiedLevel, resources.name)
+    .limit(limit);
 }

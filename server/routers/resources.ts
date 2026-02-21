@@ -3,6 +3,7 @@ import {
   getAllCategories,
   getResourceById,
   getTopResourcesByCategory,
+  getNearbyResources,
   searchResources,
 } from "../db";
 import { z } from "zod";
@@ -45,5 +46,21 @@ export const resourcesRouter = router({
     )
     .query(async ({ input }) => {
       return getTopResourcesByCategory(input.categoryId, input.state, input.limit);
+    }),
+
+  nearby: publicProcedure
+    .input(
+      z.object({
+        state: z.string().length(2),
+        categorySlugs: z.array(z.string()).optional(),
+        limit: z.number().min(1).max(6).default(3),
+      })
+    )
+    .query(async ({ input }) => {
+      return getNearbyResources({
+        state: input.state,
+        categorySlugs: input.categorySlugs,
+        limit: input.limit,
+      });
     }),
 });

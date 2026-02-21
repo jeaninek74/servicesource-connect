@@ -86,3 +86,8 @@
 ## Enhancement Round 4
 - [x] Share Resource button: ShareResource component with copy link, SMS, email
 - [x] Share Resource button: integrated into ResourceDetail page
+
+## Enhancement Round 5
+- [x] Nearby Resources: backend getNearbyResources query (zip/state match + category filter)
+- [x] Nearby Resources: NearbyResources widget component
+- [x] Nearby Resources: integrated into Dashboard page

@@ -29,6 +29,7 @@ import {
   Map,
 } from "lucide-react";
 import { toast } from "sonner";
+import NearbyResources from "@/components/NearbyResources";
 
 const categoryIcons: Record<string, React.ElementType> = {
   housing: Home,
@@ -212,6 +213,18 @@ export default function Dashboard() {
           </p>
         </div>
       </div>
+
+      {/* Nearby Resources Widget */}
+      {profile?.state && (
+        <div className="container mt-8">
+          <div className="max-w-sm">
+            <NearbyResources
+              state={profile.state}
+              categorySlugs={needsCategories.length > 0 ? needsCategories : undefined}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Category Tiles */}
       <div className="container mt-8">
