@@ -1,5 +1,6 @@
 import { publicProcedure, router } from "../_core/trpc";
 import { createPartnerSubmission } from "../db";
+import { notifyOwner } from "../_core/notification";
 import { z } from "zod";
 
 export const partnerRouter = router({
@@ -24,6 +25,27 @@ export const partnerRouter = router({
     )
     .mutation(async ({ input }) => {
       await createPartnerSubmission(input as any);
+
+      // Notify the platform owner about the new submission
+      try {
+        await notifyOwner({
+          title: `New Partner Submission: ${input.resourceName}`,
+          content: [
+            `**Organization:** ${input.submitterOrg || "(not provided)"}`,
+            `**Submitted by:** ${input.submitterName} <${input.submitterEmail}>`,
+            `**Resource:** ${input.resourceName}`,
+            `**Coverage:** ${input.coverageArea}${input.state ? " — " + input.state : ""}`,
+            `**Description:** ${input.description || "(none)"}`,
+            `**URL:** ${input.url || "(none)"}`,
+            ``,
+            `Review this submission in the Admin Console → Submissions tab.`,
+          ].join("\n"),
+        });
+      } catch (err) {
+        // Notification failure is non-fatal — submission is already saved
+        console.warn("[Partner] Owner notification failed:", err);
+      }
+
       return { success: true };
     }),
 });

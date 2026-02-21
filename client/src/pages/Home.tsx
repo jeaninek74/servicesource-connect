@@ -40,7 +40,7 @@ const categoryIcons: Record<string, React.ElementType> = {
 };
 
 const stats = [
-  { value: "74+", label: "Verified Resources" },
+  { value: "340+", label: "Verified Resources" },
   { value: "50", label: "States Covered" },
   { value: "30+", label: "VA Lenders" },
   { value: "12", label: "Life Categories" },
@@ -130,7 +130,7 @@ export default function Home() {
                 className="border-white/30 text-white hover:bg-white/10 font-medium text-base px-8 py-6 bg-transparent"
                 asChild
               >
-                <Link href="/lenders">Browse VA Lenders</Link>
+                <Link href="/assistant">✦ Try AI Navigator</Link>
               </Button>
             </div>
             <p className="mt-4 text-sm text-white/50">

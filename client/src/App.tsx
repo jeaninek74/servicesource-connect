@@ -23,6 +23,7 @@ import Privacy from "./pages/Privacy";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import CrisisSupport from "./pages/CrisisSupport";
+import Assistant from "./pages/Assistant";
 
 function Router() {
   return (
@@ -45,6 +46,7 @@ function Router() {
       <Route path="/admin/audit-logs" component={AdminAuditLogs} />
       <Route path="/admin/submissions" component={AdminSubmissions} />
       <Route path="/crisis" component={CrisisSupport} />
+      <Route path="/assistant" component={Assistant} />
       <Route path="/category/:categorySlug" component={CategoryResults} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

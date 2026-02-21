@@ -8,6 +8,7 @@ import { lendersRouter } from "./routers/lenders";
 import { savedRouter } from "./routers/saved";
 import { adminRouter } from "./routers/admin";
 import { partnerRouter } from "./routers/partner";
+import { assistantRouter } from "./routers/assistant";
 
 export const appRouter = router({
   system: systemRouter,
@@ -27,6 +28,7 @@ export const appRouter = router({
   saved: savedRouter,
   admin: adminRouter,
   partner: partnerRouter,
+  assistant: assistantRouter,
 });
 
 export type AppRouter = typeof appRouter;

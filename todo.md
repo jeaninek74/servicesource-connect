@@ -62,3 +62,10 @@
 - [x] 22 vitest unit tests for all key routers
 - [x] TypeScript: zero errors
 - [x] All 50 states covered in resources and lenders
+
+## Enhancement Round 2
+- [x] Expand seed data: 5–10 resources per state across all 50 states and all 12 categories
+- [x] AI resource matching assistant: backend LLM router with profile context
+- [x] AI resource matching assistant: frontend chat UI page and NavBar link
+- [x] Owner notifications: fire notifyOwner when new partner submission is received
+- [x] Update vitest tests for new features (28 total, all passing)

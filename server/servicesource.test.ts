@@ -243,3 +243,107 @@ describe("admin procedures", () => {
     expect(Array.isArray(result)).toBe(true);
   });
 });
+
+// ─── AI Assistant tests ───────────────────────────────────────────────────────
+vi.mock("./_core/llm", () => ({
+  invokeLLM: vi.fn().mockResolvedValue({
+    choices: [
+      {
+        message: {
+          content:
+            "Based on your situation, you may qualify for housing assistance through the Texas Veterans Commission. I recommend contacting them at 1-512-463-5538.",
+        },
+      },
+    ],
+  }),
+}));
+
+describe("assistant.chat", () => {
+  it("returns a response for a general query", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.assistant.chat({
+      message: "I need housing help in Texas",
+      conversationHistory: [],
+    });
+    expect(result).toBeTruthy();
+    expect(typeof result.message).toBe("string");
+    expect(result.message.length).toBeGreaterThan(0);
+    expect(result.hasCrisisIndicator).toBe(false);
+  });
+
+  it("detects crisis indicators in messages", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.assistant.chat({
+      message: "I feel hopeless and want to end my life",
+      conversationHistory: [],
+    });
+    expect(result.hasCrisisIndicator).toBe(true);
+    expect(result.crisisResources).toHaveLength(1);
+    expect(result.crisisResources[0]?.name).toBe("Veterans Crisis Line");
+  });
+
+  it("accepts conversation history", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.assistant.chat({
+      message: "What about mental health resources?",
+      conversationHistory: [
+        { role: "user", content: "I'm a veteran in Texas" },
+        { role: "assistant", content: "I can help you find resources in Texas." },
+      ],
+    });
+    expect(result).toBeTruthy();
+    expect(typeof result.message).toBe("string");
+  });
+
+  it("works with authenticated user context", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.assistant.chat({
+      message: "What benefits am I eligible for?",
+      conversationHistory: [],
+      state: "TX",
+    });
+    expect(result).toBeTruthy();
+    expect(typeof result.message).toBe("string");
+  });
+});
+
+// ─── Partner submission notification tests ────────────────────────────────────
+vi.mock("./_core/notification", () => ({
+  notifyOwner: vi.fn().mockResolvedValue(true),
+}));
+
+describe("partner.submit with notification", () => {
+  it("sends owner notification on new submission", async () => {
+    const { notifyOwner } = await import("./_core/notification");
+    const caller = appRouter.createCaller(makePublicCtx());
+    await caller.partner.submit({
+      submitterName: "John Smith",
+      submitterEmail: "john@vetorg.org",
+      submitterOrg: "Veterans Support Network",
+      resourceName: "Emergency Housing Fund",
+      description: "Emergency housing assistance for veterans",
+      url: "https://vetorg.org",
+      state: "CA",
+      coverageArea: "state",
+    });
+    expect(notifyOwner).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: expect.stringContaining("Emergency Housing Fund"),
+        content: expect.stringContaining("Veterans Support Network"),
+      })
+    );
+  });
+
+  it("still succeeds even if notification fails", async () => {
+    const { notifyOwner } = await import("./_core/notification");
+    (notifyOwner as any).mockRejectedValueOnce(new Error("Notification service down"));
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.partner.submit({
+      submitterName: "Jane Doe",
+      submitterEmail: "jane@example.org",
+      resourceName: "Test Resource",
+      coverageArea: "national",
+    });
+    expect(result.success).toBe(true);
+  });
+});
