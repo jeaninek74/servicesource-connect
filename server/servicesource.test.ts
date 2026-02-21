@@ -74,6 +74,14 @@ vi.mock("./db", () => ({
     { id: 10, name: "Texas Vet Housing", state: "TX", coverageArea: "state", verifiedLevel: "verified", isActive: true },
     { id: 11, name: "National VA Benefits", state: null, coverageArea: "national", verifiedLevel: "partner_verified", isActive: true },
   ]),
+  // Recently Viewed
+  trackRecentlyViewed: vi.fn().mockResolvedValue(undefined),
+  getRecentlyViewed: vi.fn().mockResolvedValue([
+    {
+      viewedAt: new Date(),
+      resource: { id: 5, name: "VA Healthcare", state: "TX", coverageArea: "state", verifiedLevel: "verified", isActive: true },
+    },
+  ]),
 }));
 
 // ─── Context factories ────────────────────────────────────────────────────────
@@ -510,5 +518,36 @@ describe("resources.nearby", () => {
     await expect(
       caller.resources.nearby({ state: "TX", limit: 10 })
     ).rejects.toThrow();
+  });
+});
+
+// ─── Recently Viewed tests ────────────────────────────────────────────────────
+describe("recentlyViewed.track", () => {
+  it("records a view for an authenticated user", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.recentlyViewed.track({ resourceId: 5 });
+    expect(result).toEqual({ success: true });
+  });
+
+  it("rejects unauthenticated users", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.recentlyViewed.track({ resourceId: 5 })
+    ).rejects.toThrow();
+  });
+});
+
+describe("recentlyViewed.list", () => {
+  it("returns recently viewed resources for authenticated user", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.recentlyViewed.list();
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0].resource.name).toBe("VA Healthcare");
+  });
+
+  it("rejects unauthenticated users", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.recentlyViewed.list()).rejects.toThrow();
   });
 });

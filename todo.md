@@ -91,3 +91,10 @@
 - [x] Nearby Resources: backend getNearbyResources query (zip/state match + category filter)
 - [x] Nearby Resources: NearbyResources widget component
 - [x] Nearby Resources: integrated into Dashboard page
+
+## Enhancement Round 6
+- [x] Recently Viewed: recently_viewed table in schema, migration
+- [x] Recently Viewed: backend router (track view, list last 5)
+- [x] Recently Viewed: RecentlyViewed widget component
+- [x] Recently Viewed: track on ResourceDetail page load
+- [x] Recently Viewed: widget integrated into Dashboard

@@ -12,6 +12,7 @@ import {
   resources,
   savedItems,
   digestPreferences,
+  recentlyViewed,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -530,4 +531,57 @@ export async function getNearbyResources(params: {
     .where(and(...conditions))
     .orderBy(resources.verifiedLevel, resources.name)
     .limit(limit);
+}
+
+// ─── Recently Viewed ──────────────────────────────────────────────────────────
+
+/**
+ * Record a resource view for a user. Keeps only the latest 5 unique resources.
+ * If the resource was already viewed, updates the timestamp instead of inserting a duplicate.
+ */
+export async function trackRecentlyViewed(userId: number, resourceId: number) {
+  const db = await getDb();
+  if (!db) return;
+
+  // Delete existing entry for this resource (so we can re-insert with fresh timestamp)
+  await db
+    .delete(recentlyViewed)
+    .where(and(eq(recentlyViewed.userId, userId), eq(recentlyViewed.resourceId, resourceId)));
+
+  // Insert fresh entry
+  await db.insert(recentlyViewed).values({ userId, resourceId, viewedAt: new Date() });
+
+  // Prune: keep only the 5 most recent entries per user
+  const allEntries = await db
+    .select({ id: recentlyViewed.id })
+    .from(recentlyViewed)
+    .where(eq(recentlyViewed.userId, userId))
+    .orderBy(sql`${recentlyViewed.viewedAt} DESC`);
+
+  if (allEntries.length > 5) {
+    const idsToDelete = allEntries.slice(5).map((e) => e.id);
+    await db.delete(recentlyViewed).where(inArray(recentlyViewed.id, idsToDelete));
+  }
+}
+
+/**
+ * Returns the last 5 resources viewed by a user, most recent first,
+ * joined with resource details.
+ */
+export async function getRecentlyViewed(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const rows = await db
+    .select({
+      viewedAt: recentlyViewed.viewedAt,
+      resource: resources,
+    })
+    .from(recentlyViewed)
+    .innerJoin(resources, eq(recentlyViewed.resourceId, resources.id))
+    .where(eq(recentlyViewed.userId, userId))
+    .orderBy(sql`${recentlyViewed.viewedAt} DESC`)
+    .limit(5);
+
+  return rows;
 }

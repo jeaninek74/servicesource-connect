@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import NearbyResources from "@/components/NearbyResources";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 const categoryIcons: Record<string, React.ElementType> = {
   housing: Home,
@@ -214,17 +215,18 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Nearby Resources Widget */}
-      {profile?.state && (
-        <div className="container mt-8">
-          <div className="max-w-sm">
+      {/* Nearby Resources + Recently Viewed Widgets */}
+      <div className="container mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+          {profile?.state && (
             <NearbyResources
               state={profile.state}
               categorySlugs={needsCategories.length > 0 ? needsCategories : undefined}
             />
-          </div>
+          )}
+          <RecentlyViewed />
         </div>
-      )}
+      </div>
 
       {/* Category Tiles */}
       <div className="container mt-8">

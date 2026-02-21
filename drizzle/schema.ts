@@ -256,3 +256,13 @@ export const digestPreferences = mysqlTable("digest_preferences", {
 
 export type DigestPreference = typeof digestPreferences.$inferSelect;
 export type InsertDigestPreference = typeof digestPreferences.$inferInsert;
+
+// ─── Recently Viewed ──────────────────────────────────────────────────────────
+export const recentlyViewed = mysqlTable("recently_viewed", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  resourceId: int("resourceId").notNull(),
+  viewedAt: timestamp("viewedAt").defaultNow().notNull(),
+});
+export type RecentlyViewed = typeof recentlyViewed.$inferSelect;
+export type InsertRecentlyViewed = typeof recentlyViewed.$inferInsert;

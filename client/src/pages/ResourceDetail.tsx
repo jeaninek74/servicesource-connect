@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { ReviewSection } from "@/components/ReviewSection";
 import ShareResource from "@/components/ShareResource";
+import { useEffect } from "react";
 
 export default function ResourceDetail() {
   const params = useParams<{ id: string }>();
@@ -21,6 +22,16 @@ export default function ResourceDetail() {
   const addSaved = trpc.saved.add.useMutation({
     onSuccess: () => { toast.success("Saved!"); savedQuery.refetch(); },
   });
+  const trackView = trpc.recentlyViewed.track.useMutation();
+
+  // Track this resource as viewed once it loads and the user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && id && resourceQuery.data) {
+      trackView.mutate({ resourceId: id });
+    }
+    // Only fire once per resource load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, id, !!resourceQuery.data]);
 
   const resource = resourceQuery.data;
   const isSaved = (savedQuery.data ?? []).some((s) => s.itemType === "resource" && s.itemId === id);
