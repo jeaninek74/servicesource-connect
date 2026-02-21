@@ -24,6 +24,8 @@ import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import CrisisSupport from "./pages/CrisisSupport";
 import Assistant from "./pages/Assistant";
+import ResourceMap from "./pages/ResourceMap";
+import DigestSettings from "./pages/DigestSettings";
 
 function Router() {
   return (
@@ -47,6 +49,8 @@ function Router() {
       <Route path="/admin/submissions" component={AdminSubmissions} />
       <Route path="/crisis" component={CrisisSupport} />
       <Route path="/assistant" component={Assistant} />
+      <Route path="/map" component={ResourceMap} />
+      <Route path="/digest" component={DigestSettings} />
       <Route path="/category/:categorySlug" component={CategoryResults} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

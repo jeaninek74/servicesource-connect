@@ -9,6 +9,8 @@ import { savedRouter } from "./routers/saved";
 import { adminRouter } from "./routers/admin";
 import { partnerRouter } from "./routers/partner";
 import { assistantRouter } from "./routers/assistant";
+import { reviewsRouter } from "./routers/reviews";
+import { digestRouter } from "./routers/digest";
 
 export const appRouter = router({
   system: systemRouter,
@@ -29,6 +31,8 @@ export const appRouter = router({
   admin: adminRouter,
   partner: partnerRouter,
   assistant: assistantRouter,
+  reviews: reviewsRouter,
+  digest: digestRouter,
 });
 
 export type AppRouter = typeof appRouter;

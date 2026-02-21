@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import {
   Phone, Globe, MapPin, Bookmark, CheckCircle, ArrowLeft, Clock, AlertTriangle, ExternalLink,
 } from "lucide-react";
+import { ReviewSection } from "@/components/ReviewSection";
 
 export default function ResourceDetail() {
   const params = useParams<{ id: string }>();
@@ -193,6 +194,9 @@ export default function ResourceDetail() {
           <p className="text-xs text-muted-foreground text-center">
             ServiceSource Connect provides options, not professional advice. Always verify eligibility and details directly with the provider.
           </p>
+
+          {/* Community Reviews */}
+          <ReviewSection resourceId={id} resourceName={resource.name} />
         </div>
       </div>
     </div>

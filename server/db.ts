@@ -8,8 +8,10 @@ import {
   partnerSubmissions,
   profiles,
   resourceCategories,
+  resourceReviews,
   resources,
   savedItems,
+  digestPreferences,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -356,4 +358,134 @@ export async function updatePartnerSubmission(
   const db = await getDb();
   if (!db) return;
   await db.update(partnerSubmissions).set({ ...data, updatedAt: new Date() }).where(eq(partnerSubmissions.id, id));
+}
+
+// ─── Resource Reviews ─────────────────────────────────────────────────────────
+
+export async function getReviewsForResource(resourceId: number) {
+  const db = await getDb();
+  if (!db) return { reviews: [], averageRating: 0, totalCount: 0 };
+
+  const reviewRows = await db
+    .select()
+    .from(resourceReviews)
+    .where(eq(resourceReviews.resourceId, resourceId))
+    .orderBy(sql`${resourceReviews.createdAt} DESC`)
+    .limit(50);
+
+  const totalCount = reviewRows.length;
+  const averageRating =
+    totalCount > 0
+      ? Math.round((reviewRows.reduce((sum, r) => sum + r.rating, 0) / totalCount) * 10) / 10
+      : 0;
+
+  return { reviews: reviewRows, averageRating, totalCount };
+}
+
+export async function getUserReviewForResource(userId: number, resourceId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select()
+    .from(resourceReviews)
+    .where(and(eq(resourceReviews.userId, userId), eq(resourceReviews.resourceId, resourceId)))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function upsertResourceReview(
+  userId: number,
+  resourceId: number,
+  rating: number,
+  reviewText: string | null,
+  isAnonymous: boolean
+) {
+  const db = await getDb();
+  if (!db) return;
+  const existing = await getUserReviewForResource(userId, resourceId);
+  if (existing) {
+    await db
+      .update(resourceReviews)
+      .set({ rating, reviewText, isAnonymous, updatedAt: new Date() })
+      .where(eq(resourceReviews.id, existing.id));
+  } else {
+    await db.insert(resourceReviews).values({ userId, resourceId, rating, reviewText, isAnonymous });
+  }
+}
+
+export async function deleteResourceReview(userId: number, reviewId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .delete(resourceReviews)
+    .where(and(eq(resourceReviews.id, reviewId), eq(resourceReviews.userId, userId)));
+}
+
+export async function getAverageRatingsForResources(resourceIds: number[]) {
+  if (resourceIds.length === 0) return {} as Record<number, { avg: number; count: number }>;
+  const db = await getDb();
+  if (!db) return {} as Record<number, { avg: number; count: number }>;
+
+  const rows = await db
+    .select({
+      resourceId: resourceReviews.resourceId,
+      avg: sql<number>`ROUND(AVG(${resourceReviews.rating}), 1)`,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(resourceReviews)
+    .where(inArray(resourceReviews.resourceId, resourceIds))
+    .groupBy(resourceReviews.resourceId);
+
+  return rows.reduce(
+    (acc, row) => {
+      acc[row.resourceId] = { avg: Number(row.avg), count: Number(row.count) };
+      return acc;
+    },
+    {} as Record<number, { avg: number; count: number }>
+  );
+}
+
+// ─── Digest Preferences ───────────────────────────────────────────────────────
+
+export async function getDigestPreference(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select()
+    .from(digestPreferences)
+    .where(eq(digestPreferences.userId, userId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function upsertDigestPreference(
+  userId: number,
+  data: {
+    enabled: boolean;
+    frequency: "weekly" | "monthly";
+    categories?: string[];
+    state?: string;
+  }
+) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .insert(digestPreferences)
+    .values({ userId, ...data })
+    .onDuplicateKeyUpdate({
+      set: { ...data, updatedAt: new Date() },
+    });
+}
+
+export async function getDigestSubscribers() {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      pref: digestPreferences,
+      user: users,
+    })
+    .from(digestPreferences)
+    .innerJoin(users, eq(digestPreferences.userId, users.id))
+    .where(eq(digestPreferences.enabled, true));
 }

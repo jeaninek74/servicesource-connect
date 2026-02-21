@@ -46,6 +46,29 @@ vi.mock("./db", () => ({
   adminUpdateResource: vi.fn().mockResolvedValue(undefined),
   adminCreateLender: vi.fn().mockResolvedValue({ id: 1 }),
   adminUpdateLender: vi.fn().mockResolvedValue(undefined),
+  // Reviews
+  getReviewsForResource: vi.fn().mockResolvedValue({
+    reviews: [
+      {
+        id: 1, resourceId: 42, userId: 1, rating: 5,
+        reviewText: "Very helpful resource", isAnonymous: false,
+        createdAt: new Date(), updatedAt: new Date(),
+      },
+    ],
+    averageRating: 5.0,
+    totalCount: 1,
+  }),
+  getUserReviewForResource: vi.fn().mockResolvedValue(null),
+  upsertResourceReview: vi.fn().mockResolvedValue(undefined),
+  deleteResourceReview: vi.fn().mockResolvedValue(undefined),
+  // Digest
+  getDigestPreference: vi.fn().mockResolvedValue({
+    id: 1, userId: 1, enabled: true, frequency: "weekly",
+    categories: ["housing"], state: "TX",
+    lastSentAt: null, createdAt: new Date(), updatedAt: new Date(),
+  }),
+  upsertDigestPreference: vi.fn().mockResolvedValue(undefined),
+  getDigestSubscribers: vi.fn().mockResolvedValue([]),
 }));
 
 // ─── Context factories ────────────────────────────────────────────────────────
@@ -345,5 +368,102 @@ describe("partner.submit with notification", () => {
       coverageArea: "national",
     });
     expect(result.success).toBe(true);
+  });
+});
+
+// ─── Resource Reviews tests ───────────────────────────────────────────────────
+describe("reviews router", () => {
+
+  it("lists reviews for a resource (public)", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const result = await caller.reviews.list({ resourceId: 42 });
+    expect(result.totalCount).toBe(1);
+    expect(result.averageRating).toBe(5.0);
+    expect(result.reviews[0].rating).toBe(5);
+  });
+
+  it("authenticated user can submit a review", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.reviews.submit({
+      resourceId: 42,
+      rating: 4,
+      reviewText: "Good resource for veterans",
+      isAnonymous: false,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects review with rating out of range", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    await expect(
+      caller.reviews.submit({ resourceId: 42, rating: 6, isAnonymous: false })
+    ).rejects.toThrow();
+  });
+
+  it("unauthenticated user cannot submit a review", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.reviews.submit({ resourceId: 42, rating: 3, isAnonymous: true })
+    ).rejects.toThrow();
+  });
+
+  it("authenticated user can delete their own review", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.reviews.delete({ reviewId: 1 });
+    expect(result.success).toBe(true);
+  });
+
+  it("includes userReviewId when authenticated", async () => {
+    // getUserReviewForResource returns null by default from top-level mock
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.reviews.list({ resourceId: 42 });
+    // userReviewId should be null since mock returns null
+    expect(result.userReviewId).toBeNull();
+  });
+});
+
+// ─── Digest preferences tests ───────────────────────────────────────────────────
+describe("digest router", () => {
+
+  it("authenticated user can get their digest preferences", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.digest.get();
+    expect(result).not.toBeNull();
+    expect(result?.enabled).toBe(true);
+    expect(result?.frequency).toBe("weekly");
+  });
+
+  it("unauthenticated user cannot get digest preferences", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.digest.get()).rejects.toThrow();
+  });
+
+  it("authenticated user can update digest preferences", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.digest.update({
+      enabled: true,
+      frequency: "monthly",
+      categories: ["employment"],
+      state: "CA",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("can disable digest", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    const result = await caller.digest.update({ enabled: false, frequency: "weekly" });
+    expect(result.success).toBe(true);
+  });
+
+  it("admin can trigger digest send", async () => {
+    const caller = appRouter.createCaller(makeUserCtx("admin"));
+    const result = await caller.digest.triggerSend();
+    expect(result.success).toBe(true);
+    expect(typeof result.subscriberCount).toBe("number");
+  });
+
+  it("non-admin cannot trigger digest send", async () => {
+    const caller = appRouter.createCaller(makeUserCtx("user"));
+    await expect(caller.digest.triggerSend()).rejects.toThrow();
   });
 });

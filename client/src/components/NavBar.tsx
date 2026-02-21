@@ -21,6 +21,7 @@ import {
   ChevronDown,
   Home,
   Sparkles,
+  Map,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
@@ -40,6 +41,7 @@ export default function NavBar() {
   const navLinks = [
     { href: "/", label: "Home", icon: Home },
     { href: "/assistant", label: "AI Navigator", icon: Sparkles },
+    { href: "/map", label: "Resource Map", icon: Map },
     { href: "/lenders", label: "VA Lenders", icon: Shield },
     { href: "/about", label: "About & FAQ", icon: BookOpen },
     { href: "/submit-resource", label: "Submit Resource", icon: Heart },

@@ -25,6 +25,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Bookmark,
+  Mail,
+  Map,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -163,6 +165,24 @@ export default function Dashboard() {
               >
                 <Bookmark className="h-4 w-4" />
                 Saved Items
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2 border-white/30 text-white hover:bg-white/10"
+                onClick={() => navigate("/digest")}
+              >
+                <Mail className="h-4 w-4" />
+                Digest
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2 border-white/30 text-white hover:bg-white/10"
+                onClick={() => navigate("/map")}
+              >
+                <Map className="h-4 w-4" />
+                Map
               </Button>
             </div>
           </div>

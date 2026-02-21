@@ -223,3 +223,36 @@ export const partnerSubmissions = mysqlTable("partner_submissions", {
 });
 
 export type PartnerSubmission = typeof partnerSubmissions.$inferSelect;
+
+// ─── Resource Reviews ─────────────────────────────────────────────────────────
+
+export const resourceReviews = mysqlTable("resource_reviews", {
+  id: int("id").autoincrement().primaryKey(),
+  resourceId: int("resourceId").notNull(),
+  userId: int("userId").notNull(),
+  rating: int("rating").notNull(), // 1–5
+  reviewText: text("reviewText"),
+  isAnonymous: boolean("isAnonymous").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ResourceReview = typeof resourceReviews.$inferSelect;
+export type InsertResourceReview = typeof resourceReviews.$inferInsert;
+
+// ─── Digest Preferences ───────────────────────────────────────────────────────
+
+export const digestPreferences = mysqlTable("digest_preferences", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  enabled: boolean("enabled").default(false).notNull(),
+  frequency: mysqlEnum("frequency", ["weekly", "monthly"]).default("weekly").notNull(),
+  categories: json("categories").$type<string[]>(),
+  state: varchar("state", { length: 2 }),
+  lastSentAt: timestamp("lastSentAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DigestPreference = typeof digestPreferences.$inferSelect;
+export type InsertDigestPreference = typeof digestPreferences.$inferInsert;

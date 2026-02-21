@@ -69,3 +69,16 @@
 - [x] AI resource matching assistant: frontend chat UI page and NavBar link
 - [x] Owner notifications: fire notifyOwner when new partner submission is received
 - [x] Update vitest tests for new features (28 total, all passing)
+
+## Enhancement Round 3
+- [x] Resource ratings & reviews: schema (resource_reviews table), migration
+- [x] Resource ratings & reviews: backend router (submit, list, average)
+- [x] Resource ratings & reviews: frontend star rating UI on ResourceDetail page
+- [x] Resource ratings & reviews: show average rating + count on CategoryResults cards
+- [x] Interactive Resource Map: MapView page with Google Maps integration
+- [x] Interactive Resource Map: NavBar link and route
+- [x] Interactive Resource Map: markers with resource info popups, filter by category/state
+- [x] Weekly email digest: schema (digest_preferences table), migration
+- [x] Weekly email digest: opt-in toggle on user settings/profile page
+- [x] Weekly email digest: backend endpoint to generate and send digest
+- [x] Tests for all new features (40 total, all passing)
