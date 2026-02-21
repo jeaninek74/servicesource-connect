@@ -82,3 +82,7 @@
 - [x] Weekly email digest: opt-in toggle on user settings/profile page
 - [x] Weekly email digest: backend endpoint to generate and send digest
 - [x] Tests for all new features (40 total, all passing)
+
+## Enhancement Round 4
+- [x] Share Resource button: ShareResource component with copy link, SMS, email
+- [x] Share Resource button: integrated into ResourceDetail page

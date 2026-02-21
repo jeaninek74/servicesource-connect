@@ -9,6 +9,7 @@ import {
   Phone, Globe, MapPin, Bookmark, CheckCircle, ArrowLeft, Clock, AlertTriangle, ExternalLink,
 } from "lucide-react";
 import { ReviewSection } from "@/components/ReviewSection";
+import ShareResource from "@/components/ShareResource";
 
 export default function ResourceDetail() {
   const params = useParams<{ id: string }>();
@@ -72,18 +73,21 @@ export default function ResourceDetail() {
                 )}
               </div>
             </div>
-            <Button
-              onClick={() => {
-                if (!isAuthenticated) { toast.error("Sign in to save resources."); return; }
-                addSaved.mutate({ itemType: "resource", itemId: id });
-              }}
-              disabled={isSaved}
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 bg-transparent gap-2 flex-shrink-0"
-            >
-              <Bookmark className="h-4 w-4" />
-              {isSaved ? "Saved" : "Save"}
-            </Button>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <ShareResource resourceName={resource.name} resourceId={id} />
+              <Button
+                onClick={() => {
+                  if (!isAuthenticated) { toast.error("Sign in to save resources."); return; }
+                  addSaved.mutate({ itemType: "resource", itemId: id });
+                }}
+                disabled={isSaved}
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 bg-transparent gap-2"
+              >
+                <Bookmark className="h-4 w-4" />
+                {isSaved ? "Saved" : "Save"}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
