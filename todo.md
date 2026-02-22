@@ -164,3 +164,9 @@
 - [ ] Remove VITE_ANALYTICS_ENDPOINT, VITE_ANALYTICS_WEBSITE_ID (Manus analytics)
 - [ ] Clean server/_core/oauth.ts to remove Manus OAuth dependency
 - [ ] Update GitHub Actions deploy workflow to use Railway token only
+
+## Enhancement Round 18 — Independent Services Setup
+- [ ] Create Cloudflare R2 bucket for file storage
+- [ ] Create Google Maps API key via Google Cloud
+- [ ] Create SendGrid account and API key
+- [ ] Wire all credentials into Railway environment variables

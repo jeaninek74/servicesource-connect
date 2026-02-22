@@ -47,7 +47,7 @@ const categoryIcons: Record<string, React.ElementType> = {
 const stats = [
   { value: "340+", label: "Verified Resources" },
   { value: "50", label: "States Covered" },
-  { value: "30+", label: "VA Lenders" },
+  { value: "808+", label: "VA Lenders" },
   { value: "12", label: "Life Categories" },
 ];
 

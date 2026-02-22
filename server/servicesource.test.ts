@@ -281,7 +281,7 @@ describe("admin procedures", () => {
 });
 
 // ─── AI Assistant tests ───────────────────────────────────────────────────────
-vi.mock("./_core/llm", () => ({
+vi.mock("./_core/openai", () => ({
   invokeLLM: vi.fn().mockResolvedValue({
     choices: [
       {
