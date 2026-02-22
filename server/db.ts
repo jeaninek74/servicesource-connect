@@ -70,18 +70,18 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return null;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-  return result[0];
+  return result[0] ?? null;
 }
 
 // ─── Profiles ────────────────────────────────────────────────────────────────
 
 export async function getProfileByUserId(userId: number) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return null;
   const result = await db.select().from(profiles).where(eq(profiles.userId, userId)).limit(1);
-  return result[0];
+  return result[0] ?? null;
 }
 
 export async function upsertProfile(userId: number, data: Partial<typeof profiles.$inferInsert>) {
@@ -160,9 +160,9 @@ export async function searchResources(filters: {
 
 export async function getResourceById(id: number) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return null;
   const result = await db.select().from(resources).where(eq(resources.id, id)).limit(1);
-  return result[0];
+  return result[0] ?? null;
 }
 
 export async function getTopResourcesByCategory(categoryId: number, state?: string, limit = 3) {
@@ -227,9 +227,9 @@ export async function searchLenders(filters: {
 
 export async function getLenderById(id: number) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return null;
   const result = await db.select().from(lenders).where(eq(lenders.id, id)).limit(1);
-  return result[0];
+  return result[0] ?? null;
 }
 
 export async function getLenderBranches(lenderId: number) {
