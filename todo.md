@@ -135,3 +135,9 @@
 - [x] Update resources router to accept branch filter parameter
 - [x] Add branch filter chips/dropdown to CategoryResults page
 - [x] Add branch filter to ResourceMap page
+
+## Bug Fixes Round 14
+- [x] Fix Resource Map link (broken navigation - empty string Select.Item value)
+- [x] Remove "no credit card required" text from Free Trial pricing card
+- [x] Expand VA lenders to all 50 states (now 42 lenders)
+- [x] Attach bank website links to VA lender cards (Visit Website button)

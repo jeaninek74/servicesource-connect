@@ -210,16 +210,23 @@ export default function LenderResults() {
                       </p>
                     )}
 
+                    {lender.url && (
+                      <a
+                        href={lender.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-1.5 w-full mb-2 px-3 py-1.5 rounded-md border border-primary/30 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
+                      >
+                        <Globe className="h-3.5 w-3.5" />
+                        Visit Website
+                      </a>
+                    )}
                     <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
                       <div className="flex gap-1.5">
                         {lender.phone && (
                           <a href={`tel:${lender.phone}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary">
                             <Phone className="h-3.5 w-3.5" />
-                          </a>
-                        )}
-                        {lender.url && (
-                          <a href={lender.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary ml-1">
-                            <Globe className="h-3.5 w-3.5" />
+                            <span>{lender.phone}</span>
                           </a>
                         )}
                       </div>

@@ -245,12 +245,12 @@ export default function ResourceMap() {
             </SelectContent>
           </Select>
 
-          <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+          <Select value={selectedBranch || "all"} onValueChange={(v) => setSelectedBranch(v === "all" ? "" : v)}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="All Branches" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Branches</SelectItem>
+              <SelectItem value="all">All Branches</SelectItem>
               <SelectItem value="army">Army</SelectItem>
               <SelectItem value="navy">Navy</SelectItem>
               <SelectItem value="air-force">Air Force</SelectItem>

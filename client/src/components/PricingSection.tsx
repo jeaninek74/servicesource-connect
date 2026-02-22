@@ -125,7 +125,7 @@ export function PricingSection() {
             Choose Your Plan
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Start with a 7-day free trial — no credit card required. Upgrade anytime to unlock unlimited access.
+            Start with a 7-day free trial. Upgrade anytime to unlock unlimited access.
           </p>
         </div>
 
@@ -204,11 +204,7 @@ export function PricingSection() {
                     {isLoading ? "Loading..." : plan.cta}
                   </Button>
 
-                  {plan.id === "free_trial" && (
-                    <p className="text-xs text-center text-muted-foreground">
-                      No credit card required
-                    </p>
-                  )}
+
                   {plan.id === "yearly" && (
                     <p className="text-xs text-center text-muted-foreground">
                       Equivalent to $12.50/month
