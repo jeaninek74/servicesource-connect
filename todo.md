@@ -141,3 +141,6 @@
 - [x] Remove "no credit card required" text from Free Trial pricing card
 - [x] Expand VA lenders to all 50 states (now 42 lenders)
 - [x] Attach bank website links to VA lender cards (Visit Website button)
+
+## Enhancement Round 15 — Comprehensive VA Lenders
+- [x] Add all VA-approved lenders nationwide — 808 lenders imported from official VA FY2026 lender loan volume report
