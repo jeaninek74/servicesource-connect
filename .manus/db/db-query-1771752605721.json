@@ -1,0 +1,23 @@
+{
+  "query": "SELECT \n  COUNT(*) as total_lenders,\n  COUNT(url) as with_url,\n  COUNT(phone) as with_phone,\n  COUNT(CASE WHEN url IS NOT NULL AND url != '' THEN 1 END) as with_nonempty_url\nFROM lenders;\nSELECT name, url, phone FROM lenders LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4TCdEkG57UNdEiY.root --database AfijqHG8UiEBpULyCWyTc6 --execute SELECT \n  COUNT(*) as total_lenders,\n  COUNT(url) as with_url,\n  COUNT(phone) as with_phone,\n  COUNT(CASE WHEN url IS NOT NULL AND url != '' THEN 1 END) as with_nonempty_url\nFROM lenders;\nSELECT name, url, phone FROM lenders LIMIT 5;",
+  "rows": [
+    {
+      "total_lenders": "808",
+      "with_url": "808",
+      "with_phone": "808",
+      "with_nonempty_url": "58"
+    }
+  ],
+  "messages": [
+    "name\turl\tphone",
+    "Veterans United Home Loans\thttps://www.veteransunited.com/\t1-800-884-1498",
+    "Navy Federal Credit Union\thttps://www.navyfederal.org/\t1-888-842-6328",
+    "USAA Federal Savings Bank\thttps://www.usaa.com/\t1-800-531-8722",
+    "PenFed Credit Union\thttps://www.penfed.org/\t1-800-247-5626",
+    "Quicken Loans / Rocket Mortgage\thttps://www.rocketmortgage.com/\t1-800-785-4788"
+  ],
+  "stdout": "total_lenders\twith_url\twith_phone\twith_nonempty_url\n808\t808\t808\t58\nname\turl\tphone\nVeterans United Home Loans\thttps://www.veteransunited.com/\t1-800-884-1498\nNavy Federal Credit Union\thttps://www.navyfederal.org/\t1-888-842-6328\nUSAA Federal Savings Bank\thttps://www.usaa.com/\t1-800-531-8722\nPenFed Credit Union\thttps://www.penfed.org/\t1-800-247-5626\nQuicken Loans / Rocket Mortgage\thttps://www.rocketmortgage.com/\t1-800-785-4788\n",
+  "stderr": "",
+  "execution_time_ms": 86
+}

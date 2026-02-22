@@ -1,0 +1,15 @@
+{
+  "query": "SELECT \n  COUNT(*) as total_lenders,\n  COUNT(CASE WHEN url IS NOT NULL AND url != '' THEN 1 END) as with_url,\n  COUNT(CASE WHEN phone IS NOT NULL AND phone != '' THEN 1 END) as with_phone\nFROM lenders;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4TCdEkG57UNdEiY.root --database AfijqHG8UiEBpULyCWyTc6 --execute SELECT \n  COUNT(*) as total_lenders,\n  COUNT(CASE WHEN url IS NOT NULL AND url != '' THEN 1 END) as with_url,\n  COUNT(CASE WHEN phone IS NOT NULL AND phone != '' THEN 1 END) as with_phone\nFROM lenders;",
+  "rows": [
+    {
+      "total_lenders": "808",
+      "with_url": "58",
+      "with_phone": "42"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_lenders\twith_url\twith_phone\n808\t58\t42\n",
+  "stderr": "",
+  "execution_time_ms": 163
+}

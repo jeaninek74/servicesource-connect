@@ -210,17 +210,15 @@ export default function LenderResults() {
                       </p>
                     )}
 
-                    {lender.url && (
-                      <a
-                        href={lender.url}
+                    <a
+                        href={lender.url || `https://www.google.com/search?q=${encodeURIComponent(lender.name + ' VA loan mortgage')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-1.5 w-full mb-2 px-3 py-1.5 rounded-md border border-primary/30 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
                       >
                         <Globe className="h-3.5 w-3.5" />
-                        Visit Website
+                        {lender.url ? "Visit Website" : "Search Online"}
                       </a>
-                    )}
                     <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
                       <div className="flex gap-1.5">
                         {lender.phone && (

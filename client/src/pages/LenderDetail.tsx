@@ -119,17 +119,20 @@ export default function LenderDetail() {
                     </div>
                   </div>
                 )}
-                {lender.url && (
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                     <Globe className="h-5 w-5 text-primary flex-shrink-0" />
                     <div>
                       <div className="text-xs text-muted-foreground">Website</div>
-                      <a href={lender.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-foreground hover:text-primary flex items-center gap-1">
-                        Visit Website <ExternalLink className="h-3 w-3" />
+                      <a
+                        href={lender.url || `https://www.google.com/search?q=${encodeURIComponent(lender.name + ' VA loan mortgage')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-foreground hover:text-primary flex items-center gap-1"
+                      >
+                        {lender.url ? "Visit Website" : "Search Online"} <ExternalLink className="h-3 w-3" />
                       </a>
                     </div>
                   </div>
-                )}
               </div>
 
               {lender.statesServed && (lender.statesServed as string[]).length > 0 && (
@@ -186,14 +189,16 @@ export default function LenderDetail() {
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {lender.url && (
               <Button asChild className="flex-1">
-                <a href={lender.url} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={lender.url || `https://www.google.com/search?q=${encodeURIComponent(lender.name + ' VA loan mortgage')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Globe className="h-4 w-4 mr-2" />
-                  Visit Official Website
+                  {lender.url ? "Visit Official Website" : "Search Online"}
                 </a>
               </Button>
-            )}
             {lender.phone && (
               <Button variant="outline" asChild className="flex-1">
                 <a href={`tel:${lender.phone}`}>

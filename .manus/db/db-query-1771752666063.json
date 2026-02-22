@@ -1,0 +1,75 @@
+{
+  "query": "SELECT id, name, url, phone FROM lenders WHERE url IS NULL OR url = '' LIMIT 10;\nSELECT COUNT(*) as no_url_count FROM lenders WHERE url IS NULL OR url = '';\nSELECT COUNT(*) as total FROM lenders;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4TCdEkG57UNdEiY.root --database AfijqHG8UiEBpULyCWyTc6 --execute SELECT id, name, url, phone FROM lenders WHERE url IS NULL OR url = '' LIMIT 10;\nSELECT COUNT(*) as no_url_count FROM lenders WHERE url IS NULL OR url = '';\nSELECT COUNT(*) as total FROM lenders;",
+  "rows": [
+    {
+      "id": "30022",
+      "name": "Planet Home Lending, llc",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30023",
+      "name": "Usaa fsb",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30024",
+      "name": "Cmg Financial",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30025",
+      "name": "Guaranteed Rate inc",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30026",
+      "name": "New Day Financial, llc",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30027",
+      "name": "Lakeview Loan Servicing",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30028",
+      "name": "Guild Mortgage Company llc",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30029",
+      "name": "Fairway Independent Mtg corp",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30030",
+      "name": "Lennar Mortgage, llc",
+      "url": "",
+      "phone": ""
+    },
+    {
+      "id": "30031",
+      "name": "Movement Mortgage llc",
+      "url": "",
+      "phone": ""
+    }
+  ],
+  "messages": [
+    "no_url_count",
+    "750",
+    "total",
+    "808"
+  ],
+  "stdout": "id\tname\turl\tphone\n30022\tPlanet Home Lending, llc\t\t\n30023\tUsaa fsb\t\t\n30024\tCmg Financial\t\t\n30025\tGuaranteed Rate inc\t\t\n30026\tNew Day Financial, llc\t\t\n30027\tLakeview Loan Servicing\t\t\n30028\tGuild Mortgage Company llc\t\t\n30029\tFairway Independent Mtg corp\t\t\n30030\tLennar Mortgage, llc\t\t\n30031\tMovement Mortgage llc\t\t\nno_url_count\n750\ntotal\n808\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}
