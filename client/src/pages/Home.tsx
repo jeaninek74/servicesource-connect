@@ -83,6 +83,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Top Support Banner */}
+      <div
+        className="w-full py-3 px-4 text-center text-sm font-bold tracking-widest uppercase"
+        style={{
+          background: "linear-gradient(90deg, oklch(0.20 0.10 250) 0%, oklch(0.25 0.14 260) 50%, oklch(0.20 0.10 250) 100%)",
+          color: "oklch(0.90 0.12 85)",
+          letterSpacing: "0.14em",
+          borderBottom: "3px solid oklch(0.60 0.20 85)",
+        }}
+      >
+        <span className="inline-flex items-center gap-3 flex-wrap justify-center">
+          <span>&#127482;&#127480;</span>
+          <span>Veteran &amp; Active Duty Support &mdash; Connecting Those Who Served &amp; Those Who Serve with the Resources They&apos;ve Earned</span>
+          <span>&#127482;&#127480;</span>
+        </span>
+      </div>
+
       {/* Hero Section */}
       <section
         className="relative overflow-hidden py-20 md:py-32"
