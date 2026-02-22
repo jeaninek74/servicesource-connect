@@ -112,6 +112,7 @@ export async function searchResources(filters: {
   tags?: string[];
   verifiedLevel?: string;
   coverageArea?: string;
+  militaryBranch?: string;
   search?: string;
   limit?: number;
   offset?: number;
@@ -129,6 +130,14 @@ export async function searchResources(filters: {
   }
   if (filters.verifiedLevel) conditions.push(eq(resources.verifiedLevel, filters.verifiedLevel as any));
   if (filters.coverageArea) conditions.push(eq(resources.coverageArea, filters.coverageArea as any));
+  if (filters.militaryBranch && filters.militaryBranch !== 'all') {
+    conditions.push(
+      or(
+        like(resources.militaryBranches, `%${filters.militaryBranch}%`),
+        like(resources.militaryBranches, '%all%')
+      )!
+    );
+  }
   if (filters.search) {
     const term = `%${filters.search}%`;
     conditions.push(

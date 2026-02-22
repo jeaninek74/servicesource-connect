@@ -107,6 +107,7 @@ export const resources = mysqlTable("resources", {
   hours: varchar("hours", { length: 256 }),
   languages: json("languages").$type<string[]>(),
   tags: json("tags").$type<string[]>(),
+  militaryBranches: json("militaryBranches").$type<string[]>(),
   verifiedLevel: mysqlEnum("verifiedLevel", [
     "unverified",
     "verified",

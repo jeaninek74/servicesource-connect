@@ -81,6 +81,7 @@ export default function ResourceMap() {
 
   const [selectedState, setSelectedState] = useState("TX");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedResource, setSelectedResource] = useState<ResourceItem | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
@@ -93,6 +94,7 @@ export default function ResourceMap() {
         selectedCategory !== "all"
           ? categoriesQuery.data?.find((c) => c.slug === selectedCategory)?.id
           : undefined,
+      militaryBranch: selectedBranch || undefined,
       limit: 50,
       offset: 0,
     },
@@ -240,6 +242,23 @@ export default function ResourceMap() {
                   {cat.name}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="All Branches" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Branches</SelectItem>
+              <SelectItem value="army">Army</SelectItem>
+              <SelectItem value="navy">Navy</SelectItem>
+              <SelectItem value="air-force">Air Force</SelectItem>
+              <SelectItem value="marines">Marines</SelectItem>
+              <SelectItem value="coast-guard">Coast Guard</SelectItem>
+              <SelectItem value="space-force">Space Force</SelectItem>
+              <SelectItem value="national-guard">National Guard</SelectItem>
+              <SelectItem value="reserves">Reserves</SelectItem>
             </SelectContent>
           </Select>
 

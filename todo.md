@@ -127,3 +127,11 @@
 - [x] Client: global tRPC error interceptor that silently retries transient failures
 - [x] Client: self-healing ErrorBoundary with auto-retry and graceful degradation per component
 - [x] Client: per-query null-safe data accessor hook (useSafeQuery) to prevent undefined crashes
+
+## Enhancement Round 13 — Landing Page Banner & Branch Filter
+- [x] Add veteran/active military support banner at the top of the landing page
+- [x] Add militaryBranch field to resources schema (Army, Navy, Air Force, Marines, Coast Guard, Space Force, All Branches)
+- [x] Update seed data to tag resources with applicable military branches
+- [x] Update resources router to accept branch filter parameter
+- [x] Add branch filter chips/dropdown to CategoryResults page
+- [x] Add branch filter to ResourceMap page

@@ -21,6 +21,7 @@ export const resourcesRouter = router({
         tags: z.array(z.string()).optional(),
         verifiedLevel: z.enum(["unverified", "verified", "partner_verified"]).optional(),
         coverageArea: z.enum(["local", "state", "national"]).optional(),
+        militaryBranch: z.string().optional(),
         search: z.string().max(200).optional(),
         limit: z.number().min(1).max(50).default(20),
         offset: z.number().min(0).default(0),

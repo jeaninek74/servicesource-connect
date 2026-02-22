@@ -35,6 +35,7 @@ export default function CategoryResults() {
   const [filterState, setFilterState] = useState("");
   const [filterCoverage, setFilterCoverage] = useState<"" | "local" | "state" | "national">("");
   const [filterVerified, setFilterVerified] = useState<"" | "verified" | "partner_verified">("");
+  const [filterBranch, setFilterBranch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
   const categoriesQuery = trpc.resources.categories.useQuery();
@@ -49,6 +50,7 @@ export default function CategoryResults() {
       state: filterState || undefined,
       coverageArea: filterCoverage || undefined,
       verifiedLevel: filterVerified || undefined,
+      militaryBranch: filterBranch || undefined,
       search: search || undefined,
       limit: 30,
       offset: 0,
@@ -69,9 +71,10 @@ export default function CategoryResults() {
     setFilterState("");
     setFilterCoverage("");
     setFilterVerified("");
+    setFilterBranch("");
   };
 
-  const hasFilters = search || filterState || filterCoverage || filterVerified;
+  const hasFilters = search || filterState || filterCoverage || filterVerified || filterBranch;
 
   return (
     <div className="min-h-screen bg-background pb-16">
@@ -152,7 +155,7 @@ export default function CategoryResults() {
         {/* Filters Panel */}
         {showFilters && (
           <Card className="mb-6">
-            <CardContent className="p-4 grid sm:grid-cols-3 gap-4">
+            <CardContent className="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <Label className="text-xs mb-1 block">State</Label>
                 <select
@@ -187,6 +190,24 @@ export default function CategoryResults() {
                   <option value="">All</option>
                   <option value="verified">Verified</option>
                   <option value="partner_verified">Partner Verified</option>
+                </select>
+              </div>
+              <div>
+                <Label className="text-xs mb-1 block">Military Branch</Label>
+                <select
+                  value={filterBranch}
+                  onChange={(e) => setFilterBranch(e.target.value)}
+                  className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="">All Branches</option>
+                  <option value="army">Army</option>
+                  <option value="navy">Navy</option>
+                  <option value="air-force">Air Force</option>
+                  <option value="marines">Marines</option>
+                  <option value="coast-guard">Coast Guard</option>
+                  <option value="space-force">Space Force</option>
+                  <option value="national-guard">National Guard</option>
+                  <option value="reserves">Reserves</option>
                 </select>
               </div>
             </CardContent>
