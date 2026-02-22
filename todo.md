@@ -144,3 +144,23 @@
 
 ## Enhancement Round 15 — Comprehensive VA Lenders
 - [x] Add all VA-approved lenders nationwide — 808 lenders imported from official VA FY2026 lender loan volume report
+
+## Enhancement Round 16 — Auto-Deploy CI/CD
+- [ ] Configure GitHub Actions to auto-push and trigger Railway deploy on every commit to main
+- [ ] Ensure Railway is connected to GitHub repo for automatic deployments
+
+## Enhancement Round 17 — Automatic Content Updates
+- [ ] Scheduled GitHub Actions job to pull fresh VA lender data monthly from VA.gov
+- [ ] Scheduled GitHub Actions job to sync VA resources/benefits data weekly
+- [ ] Server-side content refresh endpoint for on-demand admin updates
+- [ ] Real-time UI updates using React Query auto-refetch (no page reload needed)
+
+## Critical — Remove All Manus Internal References
+- [ ] Remove Manus OAuth (VITE_OAUTH_PORTAL_URL, OAUTH_SERVER_URL, VITE_APP_ID) — replace with JWT-based auth
+- [ ] Remove BUILT_IN_FORGE_API_KEY, BUILT_IN_FORGE_API_URL, VITE_FRONTEND_FORGE_API references
+- [ ] Remove OWNER_OPEN_ID, OWNER_NAME Manus-specific env vars
+- [ ] Remove Manus notification helper (notifyOwner)
+- [ ] Remove manus.im references from const.ts and any login URL builders
+- [ ] Remove VITE_ANALYTICS_ENDPOINT, VITE_ANALYTICS_WEBSITE_ID (Manus analytics)
+- [ ] Clean server/_core/oauth.ts to remove Manus OAuth dependency
+- [ ] Update GitHub Actions deploy workflow to use Railway token only

@@ -63,6 +63,29 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     updateSet.role = "admin";
   }
 
+  // Handle new auth fields
+  const authFields = ["passwordHash", "passwordResetToken"] as const;
+  for (const field of authFields) {
+    const value = (user as any)[field];
+    if (value === undefined) continue;
+    (values as any)[field] = value ?? null;
+    updateSet[field] = value ?? null;
+  }
+  const boolFields = ["emailVerified"] as const;
+  for (const field of boolFields) {
+    const value = (user as any)[field];
+    if (value === undefined) continue;
+    (values as any)[field] = value;
+    updateSet[field] = value;
+  }
+  const dateFields2 = ["passwordResetExpires"] as const;
+  for (const field of dateFields2) {
+    const value = (user as any)[field];
+    if (value === undefined) continue;
+    (values as any)[field] = value ?? null;
+    updateSet[field] = value ?? null;
+  }
+
   if (!values.lastSignedIn) values.lastSignedIn = new Date();
   if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
 
@@ -73,6 +96,20 @@ export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) return null;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function getUserByResetToken(token: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(users).where(eq(users.passwordResetToken, token)).limit(1);
   return result[0] ?? null;
 }
 

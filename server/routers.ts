@@ -1,7 +1,5 @@
-import { COOKIE_NAME } from "@shared/const";
-import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { router } from "./_core/trpc";
 import { profileRouter } from "./routers/profile";
 import { resourcesRouter } from "./routers/resources";
 import { lendersRouter } from "./routers/lenders";
@@ -13,19 +11,11 @@ import { reviewsRouter } from "./routers/reviews";
 import { digestRouter } from "./routers/digest";
 import { recentlyViewedRouter } from "./routers/recentlyViewed";
 import { subscriptionRouter } from "./routers/subscription";
+import { emailAuthRouter } from "./routers/emailAuth";
 
 export const appRouter = router({
   system: systemRouter,
-
-  auth: router({
-    me: publicProcedure.query((opts) => opts.ctx.user),
-    logout: publicProcedure.mutation(({ ctx }) => {
-      const cookieOptions = getSessionCookieOptions(ctx.req);
-      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
-      return { success: true } as const;
-    }),
-  }),
-
+  auth: emailAuthRouter,
   profile: profileRouter,
   resources: resourcesRouter,
   lenders: lendersRouter,

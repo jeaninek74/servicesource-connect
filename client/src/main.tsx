@@ -31,9 +31,11 @@ const queryClient = new QueryClient({
         return failureCount < 3;
       },
       retryDelay: (attempt) => Math.min(1000 * Math.pow(2, attempt), 10000),
-      staleTime: 30_000,
-      gcTime: 5 * 60_000,
-      refetchOnWindowFocus: true,
+      staleTime: 60_000,           // Data stays fresh for 1 minute
+      gcTime: 10 * 60_000,           // Keep in cache for 10 minutes
+      refetchOnWindowFocus: true,    // Refetch when user returns to tab
+      refetchOnReconnect: true,      // Refetch when network reconnects
+      refetchInterval: 5 * 60_000,  // Auto-refetch every 5 minutes in background
     },
     mutations: {
       retry: (failureCount, error) => {

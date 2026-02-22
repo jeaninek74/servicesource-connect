@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
-import { invokeLLM } from "../_core/llm";
+import { invokeLLM } from "../_core/openai";
 import { searchResources, getProfileByUserId } from "../db";
 
 export const assistantRouter = router({
