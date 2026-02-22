@@ -47,9 +47,10 @@ export const PLANS = {
     savings: "Save $150 vs monthly",
     features: [
       "Everything in Monthly",
-      "2 months free vs monthly billing",
-      "Early access to new features",
-      "Dedicated support channel",
+      "Save $150 vs monthly billing",
+      "All 12 resource categories & 50-state coverage",
+      "AI Navigator assistant",
+      "Interactive resource map",
     ],
   },
 } as const;

@@ -116,3 +116,14 @@
 - [ ] VPN/proxy detection middleware on protected routes
 - [ ] IP-based trial tracking to prevent VPN bypass of free trial
 - [ ] Google OAuth login support
+
+## Enhancement Round 9 — Content Accuracy
+- [x] Fix yearly tier feature list to only show actually-built features
+
+## Enhancement Round 10 — Automated Error Recovery System
+- [ ] Server: safe query wrapper that guarantees null (never undefined) from all db helpers
+- [ ] Server: tRPC errorFormatter with structured logging for all procedure errors
+- [ ] Client: QueryClient configured with smart retry, stale-while-revalidate, and null fallback
+- [ ] Client: global tRPC error interceptor that silently retries transient failures
+- [ ] Client: self-healing ErrorBoundary with auto-retry and graceful degradation per component
+- [ ] Client: per-query null-safe data accessor hook (useSafeQuery) to prevent undefined crashes

@@ -223,9 +223,9 @@ export default function SubscriptionManage() {
                   <div className="text-xs text-accent font-medium mb-3">Save $150 vs monthly billing</div>
                   <ul className="text-sm text-muted-foreground space-y-1 mb-4">
                     <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> Everything in Monthly</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> 2 months free</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> Early feature access</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> Dedicated support</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> Save $150 vs monthly billing</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> All 12 resource categories</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> AI Navigator assistant</li>
                   </ul>
                   <Button
                     className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
