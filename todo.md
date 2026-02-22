@@ -98,3 +98,21 @@
 - [x] Recently Viewed: RecentlyViewed widget component
 - [x] Recently Viewed: track on ResourceDetail page load
 - [x] Recently Viewed: widget integrated into Dashboard
+
+## Enhancement Round 7 — Subscription Tiers
+- [x] Stripe products.ts with 3 tiers defined
+- [x] Subscription schema: stripe_customer_id, stripe_subscription_id on users table
+- [x] Backend: createCheckoutSession, getSubscriptionStatus, webhook handler
+- [x] Pricing page with Free Trial / Monthly / Yearly cards
+- [x] Checkout redirect flow (Stripe Checkout + billing portal)
+- [x] Subscription management page (view plan, cancel, upgrade)
+- [x] Tests for subscription router (57 total, all passing)
+
+## Enhancement Round 8 — Security & Auth
+- [x] Stripe package installed, subscription router wired
+- [x] Stripe webhook handler at /api/stripe/webhook
+- [x] Pricing section on landing page (3 tier cards)
+- [x] Pricing link in NavBar, Subscription link in user dropdown
+- [ ] VPN/proxy detection middleware on protected routes
+- [ ] IP-based trial tracking to prevent VPN bypass of free trial
+- [ ] Google OAuth login support

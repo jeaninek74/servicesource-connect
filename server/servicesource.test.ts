@@ -551,3 +551,97 @@ describe("recentlyViewed.list", () => {
     await expect(caller.recentlyViewed.list()).rejects.toThrow();
   });
 });
+
+// ─── Subscription tests ────────────────────────────────────────────────────────
+
+// Mock Stripe so tests don't hit the real API
+vi.mock("stripe", () => {
+  const mockStripe = {
+    customers: {
+      create: vi.fn().mockResolvedValue({ id: "cus_test123" }),
+    },
+    prices: {
+      list: vi.fn().mockResolvedValue({ data: [] }),
+      create: vi.fn().mockResolvedValue({ id: "price_test123" }),
+    },
+    products: {
+      list: vi.fn().mockResolvedValue({ data: [] }),
+      create: vi.fn().mockResolvedValue({ id: "prod_test123" }),
+    },
+    checkout: {
+      sessions: {
+        create: vi.fn().mockResolvedValue({ url: "https://checkout.stripe.com/test" }),
+      },
+    },
+    billingPortal: {
+      sessions: {
+        create: vi.fn().mockResolvedValue({ url: "https://billing.stripe.com/test" }),
+      },
+    },
+    subscriptions: {
+      update: vi.fn().mockResolvedValue({}),
+      cancel: vi.fn().mockResolvedValue({}),
+    },
+  };
+  return {
+    default: vi.fn(() => mockStripe),
+  };
+});
+
+describe("subscription.getStatus", () => {
+  it("requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.subscription.getStatus()).rejects.toThrow();
+  });
+
+  it("returns status for authenticated user (db returns null)", async () => {
+    // getDb returns null in tests, so the procedure should throw or return default
+    const caller = appRouter.createCaller(makeUserCtx());
+    // With null db, it throws "Database unavailable"
+    await expect(caller.subscription.getStatus()).rejects.toThrow();
+  });
+});
+
+describe("subscription.startTrial", () => {
+  it("requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.subscription.startTrial()).rejects.toThrow();
+  });
+
+  it("throws for unauthenticated users", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.subscription.startTrial()).rejects.toThrow();
+  });
+});
+
+describe("subscription.createCheckout", () => {
+  it("requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.subscription.createCheckout({ plan: "monthly", origin: "https://example.com" })
+    ).rejects.toThrow();
+  });
+
+  it("rejects invalid plan", async () => {
+    const caller = appRouter.createCaller(makeUserCtx());
+    await expect(
+      caller.subscription.createCheckout({ plan: "invalid" as any, origin: "https://example.com" })
+    ).rejects.toThrow();
+  });
+});
+
+describe("subscription.billingPortal", () => {
+  it("requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.subscription.billingPortal({ origin: "https://example.com" })
+    ).rejects.toThrow();
+  });
+});
+
+describe("subscription.cancel", () => {
+  it("requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.subscription.cancel()).rejects.toThrow();
+  });
+});

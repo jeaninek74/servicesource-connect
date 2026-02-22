@@ -43,8 +43,8 @@ export default function NavBar() {
     { href: "/assistant", label: "AI Navigator", icon: Sparkles },
     { href: "/map", label: "Resource Map", icon: Map },
     { href: "/lenders", label: "VA Lenders", icon: Shield },
+    { href: "/pricing", label: "Pricing", icon: BookOpen },
     { href: "/about", label: "About & FAQ", icon: BookOpen },
-    { href: "/submit-resource", label: "Submit Resource", icon: Heart },
   ];
 
   return (
@@ -111,6 +111,9 @@ export default function NavBar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/saved">Saved Items</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/subscription">Subscription</Link>
                   </DropdownMenuItem>
                   {isAdmin && (
                     <>

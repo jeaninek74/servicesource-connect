@@ -12,6 +12,7 @@ import { assistantRouter } from "./routers/assistant";
 import { reviewsRouter } from "./routers/reviews";
 import { digestRouter } from "./routers/digest";
 import { recentlyViewedRouter } from "./routers/recentlyViewed";
+import { subscriptionRouter } from "./routers/subscription";
 
 export const appRouter = router({
   system: systemRouter,
@@ -35,6 +36,7 @@ export const appRouter = router({
   reviews: reviewsRouter,
   digest: digestRouter,
   recentlyViewed: recentlyViewedRouter,
+  subscription: subscriptionRouter,
 });
 
 export type AppRouter = typeof appRouter;

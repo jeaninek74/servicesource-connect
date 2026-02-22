@@ -26,6 +26,8 @@ import CrisisSupport from "./pages/CrisisSupport";
 import Assistant from "./pages/Assistant";
 import ResourceMap from "./pages/ResourceMap";
 import DigestSettings from "./pages/DigestSettings";
+import SubscriptionManage from "./pages/SubscriptionManage";
+import Pricing from "./pages/Pricing";
 
 function Router() {
   return (
@@ -51,6 +53,8 @@ function Router() {
       <Route path="/assistant" component={Assistant} />
       <Route path="/map" component={ResourceMap} />
       <Route path="/digest" component={DigestSettings} />
+      <Route path="/subscription" component={SubscriptionManage} />
+      <Route path="/pricing" component={Pricing} />
       <Route path="/category/:categorySlug" component={CategoryResults} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

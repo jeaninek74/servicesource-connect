@@ -1,9 +1,11 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { PricingSection } from "@/components/PricingSection";
 import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
+import { useState } from "react";
 import {
   Home as HomeIcon,
   Heart,
@@ -21,7 +23,10 @@ import {
   CheckCircle,
   Star,
   Phone,
+  Zap,
+  Crown,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Link } from "wouter";
 
 const categoryIcons: Record<string, React.ElementType> = {
@@ -289,6 +294,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* Crisis Banner */}
       <section className="py-8 bg-red-50 border-y border-red-200">
