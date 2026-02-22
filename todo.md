@@ -121,9 +121,9 @@
 - [x] Fix yearly tier feature list to only show actually-built features
 
 ## Enhancement Round 10 — Automated Error Recovery System
-- [ ] Server: safe query wrapper that guarantees null (never undefined) from all db helpers
-- [ ] Server: tRPC errorFormatter with structured logging for all procedure errors
-- [ ] Client: QueryClient configured with smart retry, stale-while-revalidate, and null fallback
-- [ ] Client: global tRPC error interceptor that silently retries transient failures
-- [ ] Client: self-healing ErrorBoundary with auto-retry and graceful degradation per component
-- [ ] Client: per-query null-safe data accessor hook (useSafeQuery) to prevent undefined crashes
+- [x] Server: safe query wrapper that guarantees null (never undefined) from all db helpers
+- [x] Server: tRPC errorFormatter with structured logging for all procedure errors
+- [x] Client: QueryClient configured with smart retry, stale-while-revalidate, and null fallback
+- [x] Client: global tRPC error interceptor that silently retries transient failures
+- [x] Client: self-healing ErrorBoundary with auto-retry and graceful degradation per component
+- [x] Client: per-query null-safe data accessor hook (useSafeQuery) to prevent undefined crashes

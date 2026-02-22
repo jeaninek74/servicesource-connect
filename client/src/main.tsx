@@ -8,24 +8,51 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
-const queryClient = new QueryClient();
-
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
-
-  const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
-
-  if (!isUnauthorized) return;
-
-  window.location.href = getLoginUrl();
+  if (error.message === UNAUTHED_ERR_MSG) {
+    window.location.href = getLoginUrl();
+  }
 };
+
+const isTrpcAuthError = (error: unknown) => {
+  if (!(error instanceof TRPCClientError)) return false;
+  const code = (error as TRPCClientError<any>).data?.code;
+  return code === "UNAUTHORIZED" || code === "FORBIDDEN";
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Retry up to 3x with exponential backoff; skip auth errors
+      retry: (failureCount, error) => {
+        if (isTrpcAuthError(error)) return false;
+        return failureCount < 3;
+      },
+      retryDelay: (attempt) => Math.min(1000 * Math.pow(2, attempt), 10000),
+      staleTime: 30_000,
+      gcTime: 5 * 60_000,
+      refetchOnWindowFocus: true,
+    },
+    mutations: {
+      retry: (failureCount, error) => {
+        if (isTrpcAuthError(error)) return false;
+        if (error instanceof TRPCClientError && (error as TRPCClientError<any>).data?.code === "BAD_REQUEST") return false;
+        return failureCount < 1;
+      },
+    },
+  },
+});
 
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
     redirectToLoginIfUnauthorized(error);
-    console.error("[API Query Error]", error);
+    // Only log non-auth errors to reduce noise
+    if (!isTrpcAuthError(error)) {
+      console.error("[API Query Error]", error);
+    }
   }
 });
 
@@ -33,7 +60,9 @@ queryClient.getMutationCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.mutation.state.error;
     redirectToLoginIfUnauthorized(error);
-    console.error("[API Mutation Error]", error);
+    if (!isTrpcAuthError(error)) {
+      console.error("[API Mutation Error]", error);
+    }
   }
 });
 

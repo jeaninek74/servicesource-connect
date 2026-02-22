@@ -5,6 +5,13 @@ import type { TrpcContext } from "./context";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
+  errorFormatter({ shape, error, path }) {
+    // Log all non-UNAUTHORIZED errors server-side for monitoring
+    if (error.code !== "UNAUTHORIZED" && error.code !== "FORBIDDEN") {
+      console.error(`[tRPC Error] ${path ?? "unknown"} → ${error.code}: ${error.message}`);
+    }
+    return shape;
+  },
 });
 
 export const router = t.router;

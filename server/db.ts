@@ -1,5 +1,6 @@
 import { and, eq, inArray, like, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { safeRow, safeRows } from "./_core/safeQuery";
 import {
   auditLogs,
   InsertUser,
