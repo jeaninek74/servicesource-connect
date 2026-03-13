@@ -1,0 +1,205 @@
+{
+  "query": "SELECT COUNT(*) as total_resources FROM resources;\nSELECT state, COUNT(*) as cnt FROM resources WHERE state IS NOT NULL AND state != '' GROUP BY state ORDER BY state;\nSELECT rc.name as category, COUNT(r.id) as cnt FROM resources r JOIN resource_categories rc ON r.categoryId = rc.id GROUP BY rc.name ORDER BY rc.name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4TCdEkG57UNdEiY.root --database AfijqHG8UiEBpULyCWyTc6 --execute SELECT COUNT(*) as total_resources FROM resources;\nSELECT state, COUNT(*) as cnt FROM resources WHERE state IS NOT NULL AND state != '' GROUP BY state ORDER BY state;\nSELECT rc.name as category, COUNT(r.id) as cnt FROM resources r JOIN resource_categories rc ON r.categoryId = rc.id GROUP BY rc.name ORDER BY rc.name;",
+  "rows": [
+    {
+      "total_resources": "952"
+    },
+    {
+      "total_resources": "state\tcnt"
+    },
+    {
+      "total_resources": "AK\t18"
+    },
+    {
+      "total_resources": "AL\t19"
+    },
+    {
+      "total_resources": "AR\t18"
+    },
+    {
+      "total_resources": "AZ\t19"
+    },
+    {
+      "total_resources": "CA\t31"
+    },
+    {
+      "total_resources": "CO\t19"
+    },
+    {
+      "total_resources": "CT\t18"
+    },
+    {
+      "total_resources": "DE\t18"
+    },
+    {
+      "total_resources": "FL\t19"
+    },
+    {
+      "total_resources": "GA\t19"
+    },
+    {
+      "total_resources": "HI\t19"
+    },
+    {
+      "total_resources": "IA\t18"
+    },
+    {
+      "total_resources": "ID\t18"
+    },
+    {
+      "total_resources": "IL\t19"
+    },
+    {
+      "total_resources": "IN\t18"
+    },
+    {
+      "total_resources": "KS\t18"
+    },
+    {
+      "total_resources": "KY\t18"
+    },
+    {
+      "total_resources": "LA\t18"
+    },
+    {
+      "total_resources": "MA\t19"
+    },
+    {
+      "total_resources": "MD\t18"
+    },
+    {
+      "total_resources": "ME\t18"
+    },
+    {
+      "total_resources": "MI\t18"
+    },
+    {
+      "total_resources": "MN\t18"
+    },
+    {
+      "total_resources": "MO\t18"
+    },
+    {
+      "total_resources": "MS\t18"
+    },
+    {
+      "total_resources": "MT\t18"
+    },
+    {
+      "total_resources": "NC\t18"
+    },
+    {
+      "total_resources": "ND\t18"
+    },
+    {
+      "total_resources": "NE\t18"
+    },
+    {
+      "total_resources": "NH\t18"
+    },
+    {
+      "total_resources": "NJ\t18"
+    },
+    {
+      "total_resources": "NM\t18"
+    },
+    {
+      "total_resources": "NV\t18"
+    },
+    {
+      "total_resources": "NY\t19"
+    },
+    {
+      "total_resources": "OH\t18"
+    },
+    {
+      "total_resources": "OK\t18"
+    },
+    {
+      "total_resources": "OR\t18"
+    },
+    {
+      "total_resources": "PA\t19"
+    },
+    {
+      "total_resources": "RI\t18"
+    },
+    {
+      "total_resources": "SC\t18"
+    },
+    {
+      "total_resources": "SD\t18"
+    },
+    {
+      "total_resources": "TN\t18"
+    },
+    {
+      "total_resources": "TX\t21"
+    },
+    {
+      "total_resources": "UT\t18"
+    },
+    {
+      "total_resources": "VA\t19"
+    },
+    {
+      "total_resources": "VT\t18"
+    },
+    {
+      "total_resources": "WA\t19"
+    },
+    {
+      "total_resources": "WI\t18"
+    },
+    {
+      "total_resources": "WV\t18"
+    },
+    {
+      "total_resources": "WY\t18"
+    },
+    {
+      "total_resources": "category\tcnt"
+    },
+    {
+      "total_resources": "Benefits\t64"
+    },
+    {
+      "total_resources": "Childcare\t54"
+    },
+    {
+      "total_resources": "Community\t60"
+    },
+    {
+      "total_resources": "Education\t82"
+    },
+    {
+      "total_resources": "Employment\t106"
+    },
+    {
+      "total_resources": "Financial\t62"
+    },
+    {
+      "total_resources": "Food & Nutrition\t102"
+    },
+    {
+      "total_resources": "Healthcare\t59"
+    },
+    {
+      "total_resources": "Housing\t106"
+    },
+    {
+      "total_resources": "Legal\t102"
+    },
+    {
+      "total_resources": "Mental Health\t104"
+    },
+    {
+      "total_resources": "VA Home Loans\t51"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_resources\n952\nstate\tcnt\nAK\t18\nAL\t19\nAR\t18\nAZ\t19\nCA\t31\nCO\t19\nCT\t18\nDE\t18\nFL\t19\nGA\t19\nHI\t19\nIA\t18\nID\t18\nIL\t19\nIN\t18\nKS\t18\nKY\t18\nLA\t18\nMA\t19\nMD\t18\nME\t18\nMI\t18\nMN\t18\nMO\t18\nMS\t18\nMT\t18\nNC\t18\nND\t18\nNE\t18\nNH\t18\nNJ\t18\nNM\t18\nNV\t18\nNY\t19\nOH\t18\nOK\t18\nOR\t18\nPA\t19\nRI\t18\nSC\t18\nSD\t18\nTN\t18\nTX\t21\nUT\t18\nVA\t19\nVT\t18\nWA\t19\nWI\t18\nWV\t18\nWY\t18\ncategory\tcnt\nBenefits\t64\nChildcare\t54\nCommunity\t60\nEducation\t82\nEmployment\t106\nFinancial\t62\nFood & Nutrition\t102\nHealthcare\t59\nHousing\t106\nLegal\t102\nMental Health\t104\nVA Home Loans\t51\n",
+  "stderr": "",
+  "execution_time_ms": 2074
+}

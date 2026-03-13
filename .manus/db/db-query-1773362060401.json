@@ -1,0 +1,46 @@
+{
+  "query": "SELECT COUNT(*) as total_resources FROM resources;\nSELECT state, COUNT(*) as cnt FROM resources GROUP BY state ORDER BY cnt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4TCdEkG57UNdEiY.root --database AfijqHG8UiEBpULyCWyTc6 --execute SELECT COUNT(*) as total_resources FROM resources;\nSELECT state, COUNT(*) as cnt FROM resources GROUP BY state ORDER BY cnt DESC LIMIT 10;",
+  "rows": [
+    {
+      "total_resources": "352"
+    },
+    {
+      "total_resources": "state\tcnt"
+    },
+    {
+      "total_resources": "NULL\t24"
+    },
+    {
+      "total_resources": "CA\t19"
+    },
+    {
+      "total_resources": "TX\t9"
+    },
+    {
+      "total_resources": "MA\t7"
+    },
+    {
+      "total_resources": "AL\t7"
+    },
+    {
+      "total_resources": "PA\t7"
+    },
+    {
+      "total_resources": "FL\t7"
+    },
+    {
+      "total_resources": "GA\t7"
+    },
+    {
+      "total_resources": "IL\t7"
+    },
+    {
+      "total_resources": "VA\t7"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_resources\n352\nstate\tcnt\nNULL\t24\nCA\t19\nTX\t9\nMA\t7\nAL\t7\nPA\t7\nFL\t7\nGA\t7\nIL\t7\nVA\t7\n",
+  "stderr": "",
+  "execution_time_ms": 1798
+}
