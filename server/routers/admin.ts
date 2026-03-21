@@ -7,8 +7,11 @@ import {
   adminUpdateResource,
   getAllLenders,
   getAllResources,
+  getAdminStats,
   getAuditLogs,
   getPartnerSubmissions,
+  listAllUsers,
+  setUserRole,
   updatePartnerSubmission,
   writeAuditLog,
 } from "../db";
@@ -57,6 +60,32 @@ const lenderInput = z.object({
 });
 
 export const adminRouter = router({
+  // ─── Stats ─────────────────────────────────────────────────────────────────
+  getStats: adminProcedure.query(async () => {
+    return getAdminStats();
+  }),
+
+  // ─── User Management ───────────────────────────────────────────────────────
+  listUsers: adminProcedure
+    .input(z.object({ limit: z.number().default(50), offset: z.number().default(0) }))
+    .query(async ({ input }) => {
+      return listAllUsers(input.limit, input.offset);
+    }),
+
+  setUserRole: adminProcedure
+    .input(z.object({ userId: z.number(), role: z.enum(["user", "admin"]) }))
+    .mutation(async ({ ctx, input }) => {
+      await setUserRole(input.userId, input.role);
+      await writeAuditLog({
+        actorUserId: ctx.user.id,
+        action: `set_role_${input.role}`,
+        entityType: "user",
+        entityId: input.userId,
+        detailJson: { role: input.role },
+      });
+      return { success: true };
+    }),
+
   // ─── Resources ─────────────────────────────────────────────────────────────
   listResources: adminProcedure
     .input(z.object({ limit: z.number().default(50), offset: z.number().default(0) }))

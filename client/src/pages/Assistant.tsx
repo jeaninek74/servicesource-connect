@@ -38,14 +38,18 @@ const SUGGESTED_PROMPTS = [
 ];
 
 export default function Assistant() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const haptic = useHaptic();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const subQuery = trpc.subscription.getStatus.useQuery(undefined, { enabled: isAuthenticated });
   const chatMutation = trpc.assistant.chat.useMutation();
+
+  const subStatus = subQuery.data?.status;
+  const hasAccess = !isAuthenticated || subStatus === "active" || subStatus === "trialing" || user?.role === "admin";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -136,6 +140,32 @@ export default function Assistant() {
         </div>
       </div>
 
+      {/* Subscription Gate */}
+      {isAuthenticated && !subQuery.isLoading && !hasAccess && (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <Card className="border-primary/30 bg-primary/5 text-center">
+            <CardContent className="p-8">
+              <div className="w-16 h-16 rounded-full bg-[#C8A84B]/20 flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-8 h-8 text-[#C8A84B]" />
+              </div>
+              <h2 className="text-xl font-bold text-foreground mb-2">AI Navigator is a Premium Feature</h2>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+                Get unlimited access to the AI Resource Navigator, personalized recommendations, and priority support with a ServiceSource Connect subscription.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button asChild className="bg-[#C8A84B] hover:bg-[#b8983b] text-[#1B2A4A] font-semibold">
+                  <Link href="/pricing">View Plans &amp; Start Free Trial</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link href="/dashboard">Back to Dashboard</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {(hasAccess || !isAuthenticated) && (
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Disclaimer */}
         <Card className="mb-4 border-amber-200 bg-amber-50">
@@ -315,6 +345,7 @@ export default function Assistant() {
           </Link>
         </div>
       </div>
+      )}
     </div>
   );
 }

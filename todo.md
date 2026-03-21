@@ -170,3 +170,15 @@
 - [ ] Create Google Maps API key via Google Cloud
 - [ ] Create SendGrid account and API key
 - [ ] Wire all credentials into Railway environment variables
+
+## Enhancement Round 19 — Admin Stats, User Management & Subscription Enforcement
+- [ ] Admin: getStats procedure (user count, resource count, lender count, recent signups)
+- [ ] Admin: listUsers procedure (all users with role, subscription status, join date)
+- [ ] Admin: promoteUser / demoteUser procedures (toggle admin role)
+- [ ] Admin: AdminUsers page with user table and role management
+- [ ] Admin: AdminDashboard updated with live stats cards
+- [ ] Subscription enforcement: AI assistant gated behind active subscription
+- [ ] Subscription enforcement: show upgrade prompt for free/no-subscription users on AI page
+- [ ] Expand resources to 2000+ (add 1000+ more via seed)
+- [ ] Resource map: fix mobile layout and add haptic feedback
+- [ ] DigestSettings page: fix mobile layout

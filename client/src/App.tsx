@@ -17,6 +17,7 @@ import AdminResources from "./pages/admin/AdminResources";
 import AdminLenders from "./pages/admin/AdminLenders";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminSubmissions from "./pages/admin/AdminSubmissions";
+import AdminUsers from "./pages/admin/AdminUsers";
 import SubmitResource from "./pages/SubmitResource";
 import AboutFaq from "./pages/AboutFaq";
 import Privacy from "./pages/Privacy";
@@ -49,6 +50,7 @@ function Router() {
       <Route path="/admin/lenders" component={AdminLenders} />
       <Route path="/admin/audit-logs" component={AdminAuditLogs} />
       <Route path="/admin/submissions" component={AdminSubmissions} />
+      <Route path="/admin/users" component={AdminUsers} />
       <Route path="/crisis" component={CrisisSupport} />
       <Route path="/assistant" component={Assistant} />
       <Route path="/map" component={ResourceMap} />

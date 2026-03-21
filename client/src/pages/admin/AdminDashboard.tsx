@@ -1,11 +1,16 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { Shield, BookOpen, Building, ClipboardList, FileText, AlertTriangle } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { useHaptic } from "@/hooks/useHaptic";
+import { Shield, BookOpen, Building, ClipboardList, FileText, AlertTriangle, Users, TrendingUp, Star, Clock } from "lucide-react";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated, loading } = useAuth();
+  const haptic = useHaptic();
+  const statsQuery = trpc.admin.getStats.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin" });
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
@@ -26,11 +31,22 @@ export default function AdminDashboard() {
     );
   }
 
+  const stats = statsQuery.data;
+
+  const statCards = [
+    { label: "Total Users", value: stats?.userCount, icon: Users, color: "text-blue-500" },
+    { label: "Active Resources", value: stats?.resourceCount, icon: BookOpen, color: "text-green-500" },
+    { label: "VA Lenders", value: stats?.lenderCount, icon: Building, color: "text-amber-500" },
+    { label: "Pending Reviews", value: stats?.pendingSubmissions, icon: Clock, color: "text-orange-500" },
+    { label: "Resource Reviews", value: stats?.reviewCount, icon: Star, color: "text-purple-500" },
+  ];
+
   const adminLinks = [
-    { href: "/admin/resources", label: "Manage Resources", description: "Create, edit, and verify resource listings", icon: BookOpen },
-    { href: "/admin/lenders", label: "Manage Lenders", description: "Create, edit, and verify VA lender listings", icon: Building },
-    { href: "/admin/submissions", label: "Partner Submissions", description: "Review and approve submitted resources", icon: FileText },
-    { href: "/admin/audit-logs", label: "Audit Logs", description: "View all admin actions and security events", icon: ClipboardList },
+    { href: "/admin/users", label: "Manage Users", description: "View all users, promote/demote admin roles", icon: Users, badge: null as string | null },
+    { href: "/admin/resources", label: "Manage Resources", description: "Create, edit, and verify resource listings", icon: BookOpen, badge: null as string | null },
+    { href: "/admin/lenders", label: "Manage Lenders", description: "Create, edit, and verify VA lender listings", icon: Building, badge: null as string | null },
+    { href: "/admin/submissions", label: "Partner Submissions", description: "Review and approve submitted resources", icon: FileText, badge: stats?.pendingSubmissions ? String(stats.pendingSubmissions) : null },
+    { href: "/admin/audit-logs", label: "Audit Logs", description: "View all admin actions and security events", icon: ClipboardList, badge: null as string | null },
   ];
 
   return (
@@ -51,24 +67,64 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="container mt-8">
-        <div className="grid md:grid-cols-2 gap-6">
-          {adminLinks.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <Card className="cursor-pointer hover:shadow-md hover:border-primary/30 transition-all group h-full">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                    <link.icon className="h-6 w-6 text-primary" />
+      <div className="container mt-8 space-y-8">
+        {/* Stats Cards */}
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            Platform Overview
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {statCards.map((stat) => (
+              <Card key={stat.label} className="text-center">
+                <CardContent className="p-4">
+                  <stat.icon className={`h-6 w-6 mx-auto mb-2 ${stat.color}`} />
+                  <div className="text-2xl font-bold text-foreground">
+                    {statsQuery.isLoading ? (
+                      <div className="h-7 w-12 bg-muted animate-pulse rounded mx-auto" />
+                    ) : (
+                      stat.value !== undefined ? Number(stat.value).toLocaleString() : "—"
+                    )}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-foreground text-lg">{link.label}</h3>
-                    <p className="text-muted-foreground text-sm mt-1">{link.description}</p>
-                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">{stat.label}</div>
                 </CardContent>
               </Card>
-            </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Admin Tools */}
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Shield className="h-5 w-5 text-primary" />
+            Admin Tools
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {adminLinks.map(({ href, label, description, icon: Icon, badge }) => (
+              <Link key={href} href={href}>
+                <Card
+                  className="hover:shadow-md transition-all cursor-pointer hover:border-primary/40 h-full"
+                  onClick={() => haptic.light()}
+                >
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <Icon className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="font-semibold text-foreground text-sm">{label}</span>
+                      </div>
+                      {badge && (
+                        <Badge className="bg-orange-500 text-white text-xs">{badge}</Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">{description}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

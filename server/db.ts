@@ -632,3 +632,54 @@ export async function getRecentlyViewed(userId: number) {
 
   return rows;
 }
+
+// ─── Admin Stats & User Management ───────────────────────────────────────────
+
+export async function getAdminStats() {
+  const db = await getDb();
+  if (!db) return { userCount: 0, resourceCount: 0, lenderCount: 0, submissionCount: 0, reviewCount: 0 };
+
+  const [[userRow], [resourceRow], [lenderRow], [submissionRow], [reviewRow]] = await Promise.all([
+    db.select({ count: sql<number>`count(*)` }).from(users),
+    db.select({ count: sql<number>`count(*)` }).from(resources).where(eq(resources.isActive, true)),
+    db.select({ count: sql<number>`count(*)` }).from(lenders).where(eq(lenders.isActive, true)),
+    db.select({ count: sql<number>`count(*)` }).from(partnerSubmissions).where(eq(partnerSubmissions.status, "pending")),
+    db.select({ count: sql<number>`count(*)` }).from(resourceReviews),
+  ]);
+
+  return {
+    userCount: Number(userRow?.count ?? 0),
+    resourceCount: Number(resourceRow?.count ?? 0),
+    lenderCount: Number(lenderRow?.count ?? 0),
+    pendingSubmissions: Number(submissionRow?.count ?? 0),
+    reviewCount: Number(reviewRow?.count ?? 0),
+  };
+}
+
+export async function listAllUsers(limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const rows = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role,
+      subscriptionStatus: users.subscriptionStatus,
+      subscriptionPlan: users.subscriptionPlan,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .orderBy(sql`${users.createdAt} DESC`)
+    .limit(limit)
+    .offset(offset);
+
+  return rows;
+}
+
+export async function setUserRole(userId: number, role: "user" | "admin") {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({ role }).where(eq(users.id, userId));
+}
