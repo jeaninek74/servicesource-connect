@@ -19,6 +19,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Link } from "wouter";
+import { useHaptic } from "@/hooks/useHaptic";
 
 interface Message {
   role: "user" | "assistant";
@@ -38,6 +39,7 @@ const SUGGESTED_PROMPTS = [
 
 export default function Assistant() {
   const { user } = useAuth();
+  const haptic = useHaptic();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +54,7 @@ export default function Assistant() {
   const sendMessage = async (text?: string) => {
     const messageText = text || input.trim();
     if (!messageText || isLoading) return;
+    haptic.medium();
 
     const userMessage: Message = { role: "user", content: messageText };
     const newMessages = [...messages, userMessage];
@@ -97,6 +100,7 @@ export default function Assistant() {
   };
 
   const clearConversation = () => {
+    haptic.light();
     setMessages([]);
     setInput("");
   };
@@ -104,14 +108,14 @@ export default function Assistant() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
-      <div className="bg-[#1B2A4A] text-white py-8">
+      <div className="bg-[#1B2A4A] text-white py-6 sm:py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-full bg-[#C8A84B] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#C8A84B] flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-[#1B2A4A]" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">AI Resource Navigator</h1>
+              <h1 className="text-xl sm:text-2xl font-bold">AI Resource Navigator</h1>
               <p className="text-blue-200 text-sm">
                 Describe your situation in plain language — I'll help find the right support
               </p>
@@ -126,7 +130,7 @@ export default function Assistant() {
               Powered by AI
             </Badge>
             <Badge variant="outline" className="border-blue-300 text-blue-200 text-xs">
-              340+ verified resources
+              950+ verified resources
             </Badge>
           </div>
         </div>
@@ -147,7 +151,7 @@ export default function Assistant() {
         {/* Chat Window */}
         <Card className="shadow-lg border-0 mb-4">
           <CardContent className="p-0">
-            <div className="h-[480px] overflow-y-auto p-4 space-y-4">
+            <div className="h-[55vh] sm:h-[480px] overflow-y-auto p-3 sm:p-4 space-y-4">
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center py-8">
                   <div className="w-16 h-16 rounded-full bg-[#1B2A4A]/10 flex items-center justify-center mb-4">
@@ -164,8 +168,8 @@ export default function Assistant() {
                     {SUGGESTED_PROMPTS.map((prompt) => (
                       <button
                         key={prompt}
-                        onClick={() => sendMessage(prompt)}
-                        className="text-left text-sm px-3 py-2 rounded-lg border border-gray-200 hover:border-[#1B2A4A] hover:bg-[#1B2A4A]/5 transition-colors text-gray-600"
+                        onClick={() => { haptic.light(); sendMessage(prompt); }}
+                        className="text-left text-sm px-3 py-2.5 sm:py-2 rounded-lg border border-gray-200 hover:border-[#1B2A4A] hover:bg-[#1B2A4A]/5 transition-colors text-gray-600 active:bg-[#1B2A4A]/10"
                       >
                         {prompt}
                       </button>
@@ -263,14 +267,14 @@ export default function Assistant() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Describe your situation or ask a question... (Press Enter to send)"
-                  className="resize-none min-h-[60px] max-h-[120px] flex-1"
+                  className="resize-none min-h-[60px] max-h-[120px] flex-1 text-base sm:text-sm"
                   disabled={isLoading}
                 />
                 <div className="flex flex-col gap-2">
                   <Button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || isLoading}
-                    className="bg-[#1B2A4A] hover:bg-[#2a3f6f] h-10 w-10 p-0"
+                    className="bg-[#1B2A4A] hover:bg-[#2a3f6f] h-11 w-11 sm:h-10 sm:w-10 p-0"
                   >
                     {isLoading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

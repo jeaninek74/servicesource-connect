@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { useLocation, Link } from "wouter";
+import { useHaptic } from "@/hooks/useHaptic";
 import {
   Home,
   Heart,
@@ -57,6 +58,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function Dashboard() {
   const { isAuthenticated, loading } = useAuth();
+  const haptic = useHaptic();
   const [, navigate] = useLocation();
 
   const profileQuery = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
@@ -346,13 +348,13 @@ function CategorySection({
       )}
 
       {topQuery.isLoading ? (
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
           ))}
         </div>
       ) : topQuery.data && topQuery.data.length > 0 ? (
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {topQuery.data.map((resource) => (
             <Card key={resource.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-4">

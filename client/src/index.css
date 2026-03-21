@@ -185,3 +185,52 @@
     }
   }
 }
+/* ===== Mobile / Touch Enhancements ===== */
+
+/* Improve tap target sizes on mobile */
+@media (max-width: 640px) {
+  button, [role="button"], a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Smooth scrolling on iOS */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Better input appearance on iOS */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Safe area insets for notched phones (iPhone X+) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Remove tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling globally */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent horizontal overflow on mobile */
+body {
+  overflow-x: hidden;
+}

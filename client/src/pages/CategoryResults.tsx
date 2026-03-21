@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, Link } from "wouter";
+import { useHaptic } from "@/hooks/useHaptic";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ const US_STATES = [
 ];
 
 export default function CategoryResults() {
+  const haptic = useHaptic();
   const params = useParams<{ categorySlug: string }>();
   const { isAuthenticated } = useAuth();
 
@@ -89,7 +91,7 @@ export default function CategoryResults() {
             <span className="mx-2">/</span>
             <span className="text-white">{category?.name ?? params.categorySlug}</span>
           </div>
-          <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "Oswald, sans-serif" }}>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "Oswald, sans-serif" }}>
             {category?.name ?? "Resources"}
           </h1>
           {category?.description && (
@@ -155,7 +157,7 @@ export default function CategoryResults() {
         {/* Filters Panel */}
         {showFilters && (
           <Card className="mb-6">
-            <CardContent className="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <Label className="text-xs mb-1 block">State</Label>
                 <select
@@ -216,7 +218,7 @@ export default function CategoryResults() {
 
         {/* Results */}
         {searchQuery.isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="h-40 bg-muted animate-pulse rounded-lg" />
             ))}
@@ -235,7 +237,7 @@ export default function CategoryResults() {
             <p className="text-sm text-muted-foreground mb-4">
               Showing {searchQuery.data.items.length} resource{searchQuery.data.items.length !== 1 ? "s" : ""}
             </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {searchQuery.data.items.map((resource: any) => (
                 <ResourceCard
                   key={resource.id}

@@ -9,6 +9,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
+import { useHaptic } from "@/hooks/useHaptic";
 import {
   Shield,
   Home,
@@ -88,6 +89,7 @@ const STATE_NAMES: Record<string, string> = {
 };
 
 export default function Intake() {
+  const haptic = useHaptic();
   const { isAuthenticated, loading } = useAuth();
   const [, navigate] = useLocation();
   const [step, setStep] = useState(1);
@@ -237,7 +239,7 @@ export default function Intake() {
               <div className="space-y-6">
                 <h2 className="text-xl font-semibold text-foreground">Location & Household</h2>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="zip">ZIP Code</Label>
                     <Input
@@ -265,7 +267,7 @@ export default function Intake() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="household">Household Size</Label>
                     <Input
@@ -294,7 +296,7 @@ export default function Intake() {
 
                 <div>
                   <Label>Annual Household Income</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                     {INCOME_BANDS.map((band) => (
                       <button
                         key={band.value}
@@ -313,7 +315,7 @@ export default function Intake() {
 
                 <div>
                   <Label>VA Eligibility</Label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
                     {[
                       { value: "yes", label: "Yes" },
                       { value: "no", label: "No" },
@@ -336,7 +338,7 @@ export default function Intake() {
 
                 <div>
                   <Label>Disability Rating (if applicable)</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                     {DISABILITY_BANDS.map((band) => (
                       <button
                         key={band.value}

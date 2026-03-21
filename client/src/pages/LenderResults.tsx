@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Search, Phone, Globe, Bookmark, CheckCircle, Filter, X, Shield, AlertTriangle } from "lucide-react";
+import { useHaptic } from "@/hooks/useHaptic";
 
 const US_STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA",
@@ -26,6 +27,7 @@ const LENDER_TYPE_LABELS: Record<string, string> = {
 
 export default function LenderResults() {
   const { isAuthenticated } = useAuth();
+  const haptic = useHaptic();
   const [search, setSearch] = useState("");
   const [filterState, setFilterState] = useState("");
   const [filterType, setFilterType] = useState<"" | "bank" | "credit_union" | "broker" | "direct">("");
@@ -43,13 +45,14 @@ export default function LenderResults() {
 
   const savedQuery = trpc.saved.list.useQuery(undefined, { enabled: isAuthenticated });
   const addSaved = trpc.saved.add.useMutation({
-    onSuccess: () => { toast.success("Saved!"); savedQuery.refetch(); },
+    onSuccess: () => { haptic.success(); toast.success("Saved!"); savedQuery.refetch(); },
   });
 
   const savedIds = new Set((savedQuery.data ?? []).map((s) => `lender-${s.itemId}`));
   const hasFilters = search || filterState || filterType || filterVASpec;
 
   const clearFilters = () => {
+    haptic.light();
     setSearch("");
     setFilterState("");
     setFilterType("");
@@ -60,14 +63,14 @@ export default function LenderResults() {
     <div className="min-h-screen bg-background pb-16">
       {/* Header */}
       <div
-        className="py-10"
+        className="py-8 sm:py-10"
         style={{ background: "linear-gradient(135deg, oklch(0.22 0.08 250) 0%, oklch(0.18 0.06 250) 100%)" }}
       >
         <div className="container">
-          <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: "Oswald, sans-serif" }}>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2" style={{ fontFamily: "Oswald, sans-serif" }}>
             VA Loan Lender Directory
           </h1>
-          <p className="text-white/70 max-w-xl">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl">
             Find VA-approved lenders and mortgage specialists serving veterans and active service members across all 50 states.
           </p>
         </div>
@@ -76,47 +79,53 @@ export default function LenderResults() {
       {/* Disclaimer */}
       <div className="bg-amber-50 border-b border-amber-200 py-2">
         <div className="container">
-          <p className="text-xs text-amber-800 flex items-center gap-2">
-            <AlertTriangle className="h-3 w-3 flex-shrink-0" />
+          <p className="text-xs text-amber-800 flex items-start gap-2">
+            <AlertTriangle className="h-3 w-3 flex-shrink-0 mt-0.5" />
             Lender listings are for informational purposes only. Verify licensing and terms directly with each lender.
           </p>
         </div>
       </div>
 
-      <div className="container mt-6">
+      <div className="container mt-4 sm:mt-6">
         {/* Search + Filter Bar */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search lenders..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 h-11 sm:h-9 text-base sm:text-sm"
             />
           </div>
-          <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="gap-2">
-            <Filter className="h-4 w-4" />
-            Filters
-            {hasFilters && <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">!</Badge>}
-          </Button>
-          {hasFilters && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1 text-muted-foreground">
-              <X className="h-4 w-4" /> Clear
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => { haptic.light(); setShowFilters(!showFilters); }}
+              className="gap-2 flex-1 sm:flex-none h-11 sm:h-9"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+              {hasFilters && <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">!</Badge>}
             </Button>
-          )}
+            {hasFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1 text-muted-foreground h-11 sm:h-9">
+                <X className="h-4 w-4" /> Clear
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Filters Panel */}
         {showFilters && (
           <Card className="mb-6">
-            <CardContent className="p-4 grid sm:grid-cols-3 gap-4">
+            <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <Label className="text-xs mb-1 block">State</Label>
                 <select
                   value={filterState}
-                  onChange={(e) => setFilterState(e.target.value)}
-                  className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                  onChange={(e) => { haptic.light(); setFilterState(e.target.value); }}
+                  className="w-full h-11 sm:h-9 rounded-md border border-input bg-background px-3 text-base sm:text-sm"
                 >
                   <option value="">All States</option>
                   {US_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -126,8 +135,8 @@ export default function LenderResults() {
                 <Label className="text-xs mb-1 block">Lender Type</Label>
                 <select
                   value={filterType}
-                  onChange={(e) => setFilterType(e.target.value as any)}
-                  className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                  onChange={(e) => { haptic.light(); setFilterType(e.target.value as any); }}
+                  className="w-full h-11 sm:h-9 rounded-md border border-input bg-background px-3 text-base sm:text-sm"
                 >
                   <option value="">All Types</option>
                   <option value="bank">Bank</option>
@@ -136,13 +145,13 @@ export default function LenderResults() {
                   <option value="direct">Direct Lender</option>
                 </select>
               </div>
-              <div className="flex items-center gap-2 mt-5">
+              <div className="flex items-center gap-3 sm:mt-5">
                 <input
                   type="checkbox"
                   id="vaSpec"
                   checked={filterVASpec}
-                  onChange={(e) => setFilterVASpec(e.target.checked)}
-                  className="h-4 w-4 rounded border-input"
+                  onChange={(e) => { haptic.light(); setFilterVASpec(e.target.checked); }}
+                  className="h-5 w-5 sm:h-4 sm:w-4 rounded border-input"
                 />
                 <Label htmlFor="vaSpec" className="text-sm cursor-pointer">
                   VA Specialist Only
@@ -154,7 +163,7 @@ export default function LenderResults() {
 
         {/* Results */}
         {lendersQuery.isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="h-40 bg-muted animate-pulse rounded-lg" />
             ))}
@@ -170,12 +179,16 @@ export default function LenderResults() {
             <p className="text-sm text-muted-foreground mb-4">
               Showing {lendersQuery.data.items.length} lender{lendersQuery.data.items.length !== 1 ? "s" : ""}
             </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {lendersQuery.data.items.map((lender: any) => (
                 <Card key={lender.id} className="hover:shadow-md transition-shadow flex flex-col">
-                  <CardContent className="p-5 flex flex-col flex-1">
+                  <CardContent className="p-4 sm:p-5 flex flex-col flex-1">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <Link href={`/lender/${lender.id}`} className="font-semibold text-foreground hover:text-primary text-sm flex-1">
+                      <Link
+                        href={`/lender/${lender.id}`}
+                        onClick={() => haptic.light()}
+                        className="font-semibold text-foreground hover:text-primary text-sm flex-1"
+                      >
                         {lender.name}
                       </Link>
                       {lender.verifiedLevel && lender.verifiedLevel !== "unverified" && (
@@ -211,30 +224,37 @@ export default function LenderResults() {
                     )}
 
                     <a
-                        href={lender.url || `https://www.google.com/search?q=${encodeURIComponent(lender.name + ' VA loan mortgage')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-1.5 w-full mb-2 px-3 py-1.5 rounded-md border border-primary/30 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
-                      >
-                        <Globe className="h-3.5 w-3.5" />
-                        {lender.url ? "Visit Website" : "Search Online"}
-                      </a>
+                      href={lender.url || `https://www.google.com/search?q=${encodeURIComponent(lender.name + ' VA loan mortgage')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => haptic.medium()}
+                      className="flex items-center justify-center gap-1.5 w-full mb-2 px-3 py-2.5 sm:py-1.5 rounded-md border border-primary/30 text-xs font-medium text-primary hover:bg-primary/10 transition-colors active:bg-primary/20"
+                    >
+                      <Globe className="h-3.5 w-3.5" />
+                      {lender.url ? "Visit Website" : "Search Online"}
+                    </a>
+
                     <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
                       <div className="flex gap-1.5">
                         {lender.phone && (
-                          <a href={`tel:${lender.phone}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary">
+                          <a
+                            href={`tel:${lender.phone}`}
+                            onClick={() => haptic.medium()}
+                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"
+                          >
                             <Phone className="h-3.5 w-3.5" />
-                            <span>{lender.phone}</span>
+                            <span className="hidden sm:inline">{lender.phone}</span>
                           </a>
                         )}
                       </div>
                       <button
                         onClick={() => {
                           if (!isAuthenticated) { toast.error("Sign in to save lenders."); return; }
+                          haptic.success();
                           addSaved.mutate({ itemType: "lender", itemId: lender.id });
                         }}
                         disabled={savedIds.has(`lender-${lender.id}`)}
-                        className={`p-1.5 rounded transition-colors ${
+                        className={`p-2 sm:p-1.5 rounded transition-colors ${
                           savedIds.has(`lender-${lender.id}`) ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                         }`}
                       >

@@ -25,11 +25,13 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
+import { useHaptic } from "@/hooks/useHaptic";
 
 export default function NavBar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const haptic = useHaptic();
 
   const profileQuery = trpc.profile.get.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -51,7 +53,11 @@ export default function NavBar() {
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-primary text-primary-foreground shadow-md">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-wide">
+        <Link
+          href="/"
+          onClick={() => haptic.light()}
+          className="flex items-center gap-2 font-bold text-lg tracking-wide"
+        >
           <div className="flex h-8 w-8 items-center justify-center rounded bg-accent text-accent-foreground font-black text-sm">
             SSC
           </div>
@@ -69,6 +75,7 @@ export default function NavBar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={() => haptic.light()}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white/10 ${
                 location === link.href ? "bg-white/15" : ""
               }`}
@@ -83,7 +90,7 @@ export default function NavBar() {
           {isAuthenticated ? (
             <>
               {hasProfile && (
-                <Link href="/saved">
+                <Link href="/saved" onClick={() => haptic.light()}>
                   <Button variant="ghost" size="sm" className="hidden sm:flex text-primary-foreground hover:bg-white/10 gap-1">
                     <Bookmark className="h-4 w-4" />
                     Saved
@@ -92,7 +99,12 @@ export default function NavBar() {
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/10 gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary-foreground hover:bg-white/10 gap-1"
+                    onClick={() => haptic.light()}
+                  >
                     <User className="h-4 w-4" />
                     <span className="hidden sm:block max-w-24 truncate">{user?.name ?? "Account"}</span>
                     <ChevronDown className="h-3 w-3" />
@@ -101,30 +113,33 @@ export default function NavBar() {
                 <DropdownMenuContent align="end" className="w-48">
                   {hasProfile && (
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard">Dashboard</Link>
+                      <Link href="/dashboard" onClick={() => haptic.light()}>Dashboard</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/intake">
+                    <Link href="/intake" onClick={() => haptic.light()}>
                       {hasProfile ? "Edit Profile" : "Complete Intake"}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/saved">Saved Items</Link>
+                    <Link href="/saved" onClick={() => haptic.light()}>Saved Items</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/subscription">Subscription</Link>
+                    <Link href="/subscription" onClick={() => haptic.light()}>Subscription</Link>
                   </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href="/admin">Admin Console</Link>
+                        <Link href="/admin" onClick={() => haptic.light()}>Admin Console</Link>
                       </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => logout()} className="text-destructive">
+                  <DropdownMenuItem
+                    onClick={() => { haptic.medium(); logout(); }}
+                    className="text-destructive"
+                  >
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
@@ -135,50 +150,64 @@ export default function NavBar() {
             <Button
               size="sm"
               className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
-              onClick={() => (window.location.href = getLoginUrl())}
+              onClick={() => { haptic.medium(); window.location.href = getLoginUrl(); }}
             >
               Sign In
             </Button>
           )}
 
           {/* Mobile menu */}
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <Sheet open={mobileOpen} onOpenChange={(open) => { haptic.light(); setMobileOpen(open); }}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="md:hidden text-primary-foreground hover:bg-white/10">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-72 bg-primary text-primary-foreground border-l border-white/10">
-              <div className="flex flex-col gap-2 mt-8">
+              <div className="flex flex-col gap-1 mt-8">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+                    onClick={() => { haptic.light(); setMobileOpen(false); }}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors text-base ${
+                      location === link.href ? "bg-white/15 font-semibold" : ""
+                    }`}
                   >
-                    <link.icon className="h-5 w-5" />
+                    <link.icon className="h-5 w-5 shrink-0" />
                     {link.label}
                   </Link>
                 ))}
                 {isAuthenticated && (
                   <>
                     <div className="border-t border-white/10 my-2" />
-                    <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => { haptic.light(); setMobileOpen(false); }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10"
+                    >
                       Dashboard
                     </Link>
-                    <Link href="/saved" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10">
+                    <Link
+                      href="/saved"
+                      onClick={() => { haptic.light(); setMobileOpen(false); }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10"
+                    >
                       <Bookmark className="h-5 w-5" />
                       Saved Items
                     </Link>
                     {isAdmin && (
-                      <Link href="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10">
+                      <Link
+                        href="/admin"
+                        onClick={() => { haptic.light(); setMobileOpen(false); }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10"
+                      >
                         Admin Console
                       </Link>
                     )}
                     <button
-                      onClick={() => { logout(); setMobileOpen(false); }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-left text-red-300"
+                      onClick={() => { haptic.medium(); logout(); setMobileOpen(false); }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-left text-red-300 w-full"
                     >
                       <LogOut className="h-5 w-5" />
                       Sign Out

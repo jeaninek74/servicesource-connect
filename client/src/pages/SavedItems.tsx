@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { Link } from "wouter";
+import { useHaptic } from "@/hooks/useHaptic";
 import {
   Bookmark,
   Trash2,
@@ -19,6 +20,7 @@ import {
 
 export default function SavedItems() {
   const { isAuthenticated, loading } = useAuth();
+  const haptic = useHaptic();
   const savedQuery = trpc.saved.list.useQuery(undefined, { enabled: isAuthenticated });
   const removeSaved = trpc.saved.remove.useMutation({
     onSuccess: () => { toast.success("Removed from saved."); savedQuery.refetch(); },
@@ -48,6 +50,7 @@ export default function SavedItems() {
   const lenders = items.filter((i) => i.itemType === "lender");
 
   const exportCSV = () => {
+    haptic.medium();
     const rows: string[][] = [
       ["Type", "Name", "Phone", "Website", "Description", "Saved At"],
     ];
@@ -98,7 +101,7 @@ export default function SavedItems() {
         <div className="container">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "Oswald, sans-serif" }}>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "Oswald, sans-serif" }}>
                 Saved Items
               </h1>
               <p className="text-white/70 mt-1">
@@ -147,7 +150,7 @@ export default function SavedItems() {
                     Saved Resources ({resources.length})
                   </h2>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {resources.map((item) => {
                     const r = item.resource;
                     if (!r) return null;
@@ -159,8 +162,8 @@ export default function SavedItems() {
                               {r.name}
                             </Link>
                             <button
-                              onClick={() => removeSaved.mutate({ savedItemId: item.id })}
-                              className="p-1.5 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
+                              onClick={() => { haptic.light(); removeSaved.mutate({ savedItemId: item.id }); }}
+                              className="p-2 sm:p-1.5 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
                               title="Remove"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -201,7 +204,7 @@ export default function SavedItems() {
                     Saved Lenders ({lenders.length})
                   </h2>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {lenders.map((item) => {
                     const l = item.lender;
                     if (!l) return null;
@@ -213,8 +216,8 @@ export default function SavedItems() {
                               {l.name}
                             </Link>
                             <button
-                              onClick={() => removeSaved.mutate({ savedItemId: item.id })}
-                              className="p-1.5 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
+                              onClick={() => { haptic.light(); removeSaved.mutate({ savedItemId: item.id }); }}
+                              className="p-2 sm:p-1.5 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
                               title="Remove"
                             >
                               <Trash2 className="h-4 w-4" />

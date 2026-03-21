@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
+import { useHaptic } from "@/hooks/useHaptic";
 import {
   Home as HomeIcon,
   Heart,
@@ -71,6 +72,7 @@ const testimonials = [
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
+  const haptic = useHaptic();
   const categoriesQuery = trpc.resources.categories.useQuery();
 
   const handleGetStarted = () => {
@@ -126,13 +128,13 @@ export default function Home() {
               Serving Those Who Served
             </Badge>
             <h1
-              className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
+              className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
               style={{ fontFamily: "Oswald, sans-serif" }}
             >
               Find the Support
               <span className="block text-accent"> You've Earned</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/80 mb-8 leading-relaxed max-w-2xl">
+            <p className="text-base sm:text-lg md:text-xl text-white/80 mb-8 leading-relaxed max-w-2xl">
               ServiceSource Connect is a personalized options engine for active service members,
               veterans, National Guard, Reserve, and military families. Enter your profile once —
               discover resources across housing, healthcare, education, employment, and more.
@@ -141,7 +143,7 @@ export default function Home() {
               <Button
                 size="lg"
                 className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-base px-8 py-6"
-                onClick={handleGetStarted}
+                onClick={() => { haptic.heavy(); handleGetStarted(); }}
               >
                 Get Started — It's Free
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -152,7 +154,7 @@ export default function Home() {
                 className="border-white/30 text-white hover:bg-white/10 font-medium text-base px-8 py-6 bg-transparent"
                 asChild
               >
-                <Link href="/assistant">✦ Try AI Navigator</Link>
+                <Link href="/assistant" onClick={() => haptic.medium()}>✦ Try AI Navigator</Link>
               </Button>
             </div>
             <p className="mt-4 text-sm text-white/50">
@@ -197,7 +199,7 @@ export default function Home() {
               Three simple steps to connect with the resources and benefits you may qualify for.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 step: "01",
@@ -258,11 +260,11 @@ export default function Home() {
               From housing and healthcare to education and employment — we connect you to options in 12 essential categories.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
             {(categoriesQuery.data ?? []).map((cat) => {
               const Icon = categoryIcons[cat.slug] ?? Shield;
               return (
-                <Link key={cat.id} href={`/resources/${cat.slug}`}>
+                <Link key={cat.id} href={`/resources/${cat.slug}`} onClick={() => haptic.light()}>
                   <Card className="cursor-pointer hover:shadow-md hover:border-primary/30 transition-all group">
                     <CardContent className="p-4 flex flex-col items-center text-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -289,7 +291,7 @@ export default function Home() {
               Voices from Our Community
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <Card key={i} className="border-l-4 border-l-accent">
                 <CardContent className="p-6">
@@ -331,12 +333,14 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-2 text-center">
               <a
                 href="tel:988"
+                onClick={() => haptic.heavy()}
                 className="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
               >
                 Call 988, Press 1
               </a>
               <a
                 href="sms:838255"
+                onClick={() => haptic.heavy()}
                 className="inline-flex items-center justify-center px-4 py-2 border border-red-600 text-red-700 rounded-lg font-medium hover:bg-red-50 transition-colors"
               >
                 Text 838255
@@ -367,7 +371,7 @@ export default function Home() {
           <Button
             size="lg"
             className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-base px-10 py-6"
-            onClick={handleGetStarted}
+            onClick={() => { haptic.heavy(); handleGetStarted(); }}
           >
             Get Started Now
             <ArrowRight className="ml-2 h-5 w-5" />
@@ -378,7 +382,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-primary text-primary-foreground py-12">
         <div className="container">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="md:col-span-2">
               <div
                 className="text-xl font-bold mb-3"
